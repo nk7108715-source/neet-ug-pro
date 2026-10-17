@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEET UG Pro — Complete Exam Preparation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        physics: '#3b82f6',
+                        chemistry: '#a855f7',
+                        botany: '#10b981',
+                        zoology: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans for Hindi -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', 'Noto Sans Devanagari', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+    <div id="app" class="flex flex-col h-full w-full overflow-hidden relative">
+
+        <!-- Toast Notification Container -->
+        <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+        <!-- Custom Modal Box -->
+        <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 transform transition-all">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div id="modal-icon-wrap" class="w-10 h-10 rounded-full flex items-center justify-center bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400">
+                        <i id="modal-icon" class="fa-solid fa-info text-lg"></i>
+                    </div>
+                    <h3 id="modal-title" class="text-lg font-bold">Alert</h3>
+                </div>
+                <p id="modal-message" class="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed"></p>
+                <div id="modal-actions" class="flex justify-end space-x-3">
+                    <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP LAUNCH AD MODAL FOR FREE USERS -->
+        <div id="app-launch-ad" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md hidden p-4">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 text-center space-y-4 relative overflow-hidden">
+                <span class="text-[10px] uppercase tracking-wider font-extrabold px-3 py-1 bg-amber-100 text-amber-800 rounded-full">Sponsor Advertisement</span>
+                <h3 class="text-lg font-bold">Welcome to NEET UG Pro!</h3>
+                <p class="text-xs text-slate-500">Free tier users see launch ads. Upgrade to Pro Plan for 100% Ad-Free experience & Chapterwise filters!</p>
+                
+                <div class="w-full aspect-video bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl flex flex-col items-center justify-center text-white p-4 relative shadow-inner">
+                    <i class="fa-solid fa-crown text-4xl text-amber-400 mb-2 animate-bounce"></i>
+                    <p class="text-xs font-semibold text-slate-300">Ad finishes in <span id="launch-ad-countdown" class="text-amber-400 font-bold text-sm">5</span>s</p>
+                    <div class="w-full bg-slate-800 rounded-full h-1.5 mt-4 overflow-hidden">
+                        <div id="launch-ad-progress" class="bg-amber-400 h-1.5 w-0 transition-all duration-1000"></div>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex flex-col gap-2">
+                    <button id="launch-ad-skip-btn" onclick="closeLaunchAd()" disabled class="w-full py-3 bg-slate-300 dark:bg-slate-800 text-slate-500 font-bold rounded-xl text-xs transition">
+                        Please Wait...
+                    </button>
+                    <button onclick="openPricingModal()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold rounded-xl text-xs shadow-md hover:brightness-110 transition">
+                        ⚡ Upgrade to Pro (₹300 / ₹500)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTH SCREEN -->
+        <div id="auth-screen" class="absolute inset-0 z-40 bg-slate-900 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-100 dark:border-slate-800">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-brand-500 rounded-2xl mx-auto flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-brand-500/30 mb-4">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </div>
+                    <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">NEET UG Pro</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Student Exam Preparation Portal</p>
+                </div>
+
+                <!-- Auth Tabs -->
+                <div class="flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 mb-6">
+                    <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-white dark:bg-slate-700 shadow-sm transition">Student Login</button>
+                    <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 py-2 text-sm font-semibold text-slate-500 dark:text-slate-400 rounded-lg transition">Student Register</button>
+                </div>
+
+                <!-- Student Login Form -->
+                <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Email Address</label>
+                        <input type="email" id="login-email" required class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm" placeholder="student@neetpro.com">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Password</label>
+                        <input type="password" id="login-password" required class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition text-sm">
+                        Login as Student
+                    </button>
+                    
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
+                        <button type="button" onclick="fillStudentDemo()" class="text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline">
+                            <i class="fa-solid fa-user-graduate mr-1"></i> Quick Demo Student Login
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Student Register Form -->
+                <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Full Name</label>
+                        <input type="text" id="reg-name" required class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm" placeholder="Dr. Future Aspirant">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Email Address</label>
+                        <input type="email" id="reg-email" required class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm" placeholder="aspirant@neetpro.com">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Password</label>
+                        <input type="password" id="reg-password" required class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition text-sm">
+                        Create Free Account
+                    </button>
+                </form>
+
+                <!-- Hidden Admin Portal Access Trigger -->
+                <div class="mt-6 pt-2 text-center">
+                    <button type="button" onclick="enableAdminPortal()" class="text-[11px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                        <i class="fa-solid fa-lock text-[10px]"></i> Staff / Admin Portal
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEADER -->
+        <header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-30 shrink-0">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white font-black shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-stethoscope"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base tracking-tight leading-none">NEET UG Pro</h1>
+                    <span id="user-badge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300">Free Student Plan</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <!-- Upgrade Pro Button for Free Users -->
+                <button id="upgrade-pro-btn" onclick="openPricingModal()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold text-xs flex items-center space-x-1 shadow-md hover:scale-105 transition">
+                    <i class="fa-solid fa-crown text-xs"></i>
+                    <span>Upgrade Pro</span>
+                </button>
+
+                <button id="admin-panel-btn" onclick="switchView('admin')" class="hidden px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs flex items-center space-x-1.5 shadow-md shadow-purple-600/20 transition">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Admin</span>
+                </button>
+
+                <!-- Profile Icon in Right Upper Corner -->
+                <button onclick="switchView('profile')" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm">
+                    <i class="fa-solid fa-user-gear"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ADMIN NOTIFICATION MARQUEE BAR -->
+        <div id="admin-notification-bar" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 text-xs flex items-center justify-between shrink-0 shadow-inner overflow-hidden">
+            <div class="flex items-center space-x-2 truncate">
+                <span class="bg-white/20 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase shrink-0"><i class="fa-solid fa-bell mr-1"></i> Announcement</span>
+                <p id="admin-marquee-text" class="truncate font-medium">Welcome to NEET UG Pro! All PYQs are completely free. Mind Maps & Revision Cards have first 3 chapters free preview.</p>
+            </div>
+        </div>
+
+        <!-- MAIN VIEWPORT CONTAINER -->
+        <main class="flex-1 overflow-y-auto relative bg-slate-50 dark:bg-slate-950 pb-20">
+            
+            <!-- VIEW: HOME -->
+            <div id="view-home" class="view-section p-4 max-w-4xl mx-auto space-y-6">
+                <!-- Welcome Banner -->
+                <div class="bg-gradient-to-r from-brand-600 to-emerald-700 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 w-36 h-36 bg-white/10 rounded-full blur-xl"></div>
+                    <div class="relative z-10">
+                        <span class="text-xs uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full font-bold">Target NEET 2026</span>
+                        <h2 id="welcome-user" class="text-2xl font-black mt-3">Hello, Aspirant! 👋</h2>
+                        <p class="text-white/80 text-sm mt-1">"Consistency is the key to unlocking AIIMS Delhi." All PYQs are 100% Free!</p>
+                        
+                        <div class="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-white/20">
+                            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-sm">
+                                <span class="text-[10px] text-white/70 uppercase font-bold tracking-wider">Attempted</span>
+                                <p id="stat-attempted" class="text-lg font-black mt-0.5">0</p>
+                            </div>
+                            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-sm">
+                                <span class="text-[10px] text-white/70 uppercase font-bold tracking-wider">Accuracy</span>
+                                <p id="stat-accuracy" class="text-lg font-black mt-0.5">0%</p>
+                            </div>
+                            <div class="bg-white/10 rounded-2xl p-3 backdrop-blur-sm">
+                                <span class="text-[10px] text-white/70 uppercase font-bold tracking-wider">Bookmarks</span>
+                                <p id="stat-bookmarks" class="text-lg font-black mt-0.5">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Global Search Bar -->
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Search PYQs, chapters, revision cards..." class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm shadow-sm">
+                </div>
+
+                <!-- Subject Cards Grid -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">NEET Subjects</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="filterBySubject('Physics')" class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-physics transition text-left group shadow-sm">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-physics flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-atom"></i>
+                            </div>
+                            <h4 class="font-bold text-sm">Physics / भौतिकी</h4>
+                            <span class="text-xs text-slate-400 mt-0.5 block">Electrostatics, Mechanics...</span>
+                        </button>
+                        <button onclick="filterBySubject('Chemistry')" class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-chemistry transition text-left group shadow-sm">
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-chemistry flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-flask"></i>
+                            </div>
+                            <h4 class="font-bold text-sm">Chemistry / रसायन</h4>
+                            <span class="text-xs text-slate-400 mt-0.5 block">Biomolecules, Organic...</span>
+                        </button>
+                        <button onclick="filterBySubject('Botany')" class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-botany transition text-left group shadow-sm">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-botany flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-seedling"></i>
+                            </div>
+                            <h4 class="font-bold text-sm">Botany / वनस्पति विज्ञान</h4>
+                            <span class="text-xs text-slate-400 mt-0.5 block">Photosynthesis, Genetics...</span>
+                        </button>
+                        <button onclick="filterBySubject('Zoology')" class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-zoology transition text-left group shadow-sm">
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-zoology flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-dna"></i>
+                            </div>
+                            <h4 class="font-bold text-sm">Zoology / प्राणी विज्ञान</h4>
+                            <span class="text-xs text-slate-400 mt-0.5 block">Human Phys, Biotech...</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Shortcuts -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="switchView('pyq')" class="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-left shadow-lg shadow-blue-500/20 group">
+                        <i class="fa-solid fa-file-lines text-2xl mb-2 group-hover:scale-110 transition block"></i>
+                        <h4 class="font-bold text-base">Free PYQs & Practice</h4>
+                        <p class="text-xs text-white/80 mt-1">Practice Past Years Papers</p>
+                    </button>
+                    <button onclick="switchView('chapterwise')" class="p-4 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 text-white text-left shadow-lg shadow-indigo-600/20 group relative">
+                        <span class="absolute top-2 right-2 bg-amber-400 text-slate-950 text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full"><i class="fa-solid fa-crown"></i> Pro</span>
+                        <i class="fa-solid fa-folder-tree text-2xl mb-2 group-hover:scale-110 transition block"></i>
+                        <h4 class="font-bold text-base">Chapterwise Practice</h4>
+                        <p class="text-xs text-white/80 mt-1">Targeted Chapter Questions</p>
+                    </button>
+                    <button onclick="switchView('revision')" class="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 text-white text-left shadow-lg shadow-purple-500/20 group relative">
+                        <span class="absolute top-2 right-2 bg-amber-400 text-slate-950 text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full"><i class="fa-solid fa-crown"></i> Paid</span>
+                        <i class="fa-solid fa-bolt text-2xl mb-2 group-hover:scale-110 transition block"></i>
+                        <h4 class="font-bold text-base">Revision Cards</h4>
+                        <p class="text-xs text-white/80 mt-1">Formulas & Mnemonics</p>
+                    </button>
+                    <button onclick="switchView('mindmaps')" class="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-left shadow-lg shadow-emerald-500/20 group relative">
+                        <span class="absolute top-2 right-2 bg-amber-400 text-slate-950 text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full"><i class="fa-solid fa-crown"></i> Paid</span>
+                        <i class="fa-solid fa-diagram-project text-2xl mb-2 group-hover:scale-110 transition block"></i>
+                        <h4 class="font-bold text-base">Mind Maps</h4>
+                        <p class="text-xs text-white/80 mt-1">Visual Flowcharts</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW: PYQ PRACTICE -->
+            <div id="view-pyq" class="view-section hidden p-4 max-w-4xl mx-auto space-y-4">
+                <div class="flex flex-col space-y-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div>
+                        <h2 class="text-lg font-bold">PYQs & Question Bank (2017–2026)</h2>
+                        <p class="text-xs text-slate-500">Practice previous years questions with Paper 1/2 filters & flexible language display.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <select id="filter-subject" onchange="renderQuestions()" class="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border-0 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
+                            <option value="">All Subjects (सभी विषय)</option>
+                            <option value="Physics">Physics (भौतिकी)</option>
+                            <option value="Chemistry">Chemistry (रसायन)</option>
+                            <option value="Botany">Botany (वनस्पति विज्ञान)</option>
+                            <option value="Zoology">Zoology (प्राणी विज्ञान)</option>
+                        </select>
+
+                        <select id="filter-year" onchange="onYearFilterChange()" class="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border-0 text-xs font-semibold focus:ring-2 focus:ring-brand-500">
+                            <option value="">All Years (2017–2026)</option>
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                        </select>
+
+                        <select id="filter-paper" onchange="renderQuestions()" class="hidden px-3 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-0 text-xs font-bold focus:ring-2 focus:ring-amber-500">
+                            <option value="">All Papers (Paper 1 & 2)</option>
+                            <option value="Paper 1">Paper 1</option>
+                            <option value="Paper 2">Paper 2</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Question List Container -->
+                <div id="questions-container" class="space-y-4"></div>
+            </div>
+
+            <!-- VIEW: CHAPTERWISE QUESTIONS (PRO ONLY WITH 3 FREE CHAPTERS) -->
+            <div id="view-chapterwise" class="view-section hidden p-4 max-w-4xl mx-auto space-y-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <div>
+                        <h2 class="text-lg font-bold">Chapterwise Question Practice <span class="text-xs bg-brand-100 text-brand-800 font-extrabold px-2 py-0.5 rounded-full ml-1">First 3 Chapters Free!</span></h2>
+                        <p class="text-xs text-slate-500">First 3 chapters are completely free to practice. Unlock all chapters with Pro.</p>
+                    </div>
+                </div>
+
+                <div id="chapterwise-content-area" class="space-y-4">
+                    <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex gap-2">
+                        <select id="cw-subject" onchange="populateChapterwiseList()" class="flex-1 px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border-0 text-xs font-semibold">
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Botany">Botany</option>
+                            <option value="Zoology">Zoology</option>
+                        </select>
+                        <select id="cw-chapter" onchange="renderChapterwiseQuestions()" class="flex-1 px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border-0 text-xs font-semibold">
+                            <option value="">Select Chapter</option>
+                        </select>
+                    </div>
+
+                    <!-- Lock Banner if chapter > 3 and not pro -->
+                    <div id="chapterwise-lock-banner" class="hidden bg-gradient-to-r from-amber-500 to-amber-700 text-white p-6 rounded-3xl text-center space-y-3 shadow-xl">
+                        <i class="fa-solid fa-lock text-4xl"></i>
+                        <h3 class="text-xl font-extrabold">This Chapter is Locked (Pro Feature)</h3>
+                        <p class="text-xs text-white/90 max-w-md mx-auto">Only the first 3 chapters are free in Chapterwise practice. Upgrade to Pro Plan (₹300 / ₹500) to unlock all chapters and mind maps!</p>
+                        <button onclick="openPricingModal()" class="px-6 py-3 bg-white text-amber-800 font-black text-xs rounded-xl shadow-lg hover:bg-slate-100 transition">
+                            Upgrade to Pro Now (₹300 / ₹500)
+                        </button>
+                    </div>
+
+                    <div id="chapterwise-questions-container" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <!-- VIEW: REVISION CARDS -->
+            <div id="view-revision" class="view-section hidden p-4 max-w-4xl mx-auto space-y-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold">Quick Revision Cards <span class="text-xs bg-amber-100 text-amber-800 font-extrabold px-2 py-0.5 rounded-full ml-1"><i class="fa-solid fa-crown text-[10px]"></i> Paid Feature</span></h2>
+                        <p class="text-xs text-slate-500">Short notes & formulas. First 3 chapters are free preview!</p>
+                    </div>
+                </div>
+
+                <div id="revision-lock-banner" class="hidden bg-gradient-to-r from-amber-500 to-amber-700 text-white p-6 rounded-3xl text-center space-y-3 shadow-xl">
+                    <i class="fa-solid fa-lock text-4xl"></i>
+                    <h3 class="text-xl font-extrabold">Revision Cards & Notes Locked Beyond Free Chapters</h3>
+                    <p class="text-xs text-white/90 max-w-md mx-auto">This is a paid feature (cannot be unlocked via ads). Get ₹300 for 3 months or ₹500 for Lifetime access!</p>
+                    <button onclick="openPricingModal()" class="px-6 py-3 bg-white text-amber-800 font-black text-xs rounded-xl shadow-lg hover:bg-slate-100 transition">
+                        Choose Pro Plan (₹300 or ₹500)
+                    </button>
+                </div>
+
+                <div id="revision-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- VIEW: MIND MAPS -->
+            <div id="view-mindmaps" class="view-section hidden p-4 max-w-4xl mx-auto space-y-4">
+                <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div>
+                        <h2 class="text-lg font-bold">Mind Maps Library <span class="text-xs bg-amber-100 text-amber-800 font-extrabold px-2 py-0.5 rounded-full ml-1"><i class="fa-solid fa-crown text-[10px]"></i> Paid Feature</span></h2>
+                        <p class="text-xs text-slate-500">Visual chapter flowcharts & quick reference maps (First 3 chapters free preview).</p>
+                    </div>
+                </div>
+
+                <div id="mindmaps-lock-banner" class="hidden bg-gradient-to-r from-amber-500 to-amber-700 text-white p-6 rounded-3xl text-center space-y-3 shadow-xl">
+                    <i class="fa-solid fa-lock text-4xl"></i>
+                    <h3 class="text-xl font-extrabold">Mind Maps are Locked Beyond Free Preview</h3>
+                    <p class="text-xs text-white/90 max-w-md mx-auto">Mind Maps and Revision Notes are strictly Paid Plan items. Get ₹300/3 months or ₹500/Lifetime plan!</p>
+                    <button onclick="openPricingModal()" class="px-6 py-3 bg-white text-amber-800 font-black text-xs rounded-xl shadow-lg hover:bg-slate-100 transition">
+                        Choose Pro Plan (₹300 or ₹500)
+                    </button>
+                </div>
+
+                <div id="mindmaps-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- VIEW: VIDEOS -->
+            <div id="view-video" class="view-section hidden p-4 max-w-4xl mx-auto space-y-4">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><h2 class="text-lg font-bold">Study Videos</h2><p class="text-xs text-slate-500">Subject-wise NEET video library</p></div>
+                <div id="videos-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- VIEW: PROFILE & SETTINGS -->
+            <div id="view-profile" class="view-section hidden p-4 max-w-4xl mx-auto space-y-6">
+                <!-- User Card with Student ID -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-2xl bg-brand-500 text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-brand-500/30">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <div>
+                            <h2 id="profile-name" class="text-xl font-bold">Aspirant</h2>
+                            <p id="profile-email" class="text-xs text-slate-500">aspirant@neetpro.com</p>
+                            <p class="text-[11px] font-mono text-slate-400 mt-1">Student ID: <span id="profile-student-id" class="font-bold text-slate-600 dark:text-slate-300">NEET-STD-8492</span></p>
+                            <span id="profile-tier" class="inline-block mt-2 text-[10px] font-bold uppercase px-2.5 py-1 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300">Free Student Plan</span>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="px-4 py-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 font-bold text-xs hover:bg-rose-100 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+
+                <!-- App Settings: Theme Color & Language -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <h3 class="font-bold text-base">App Preferences & Settings</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Theme Mode Setting -->
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-xs uppercase text-slate-500">Theme Mode</h4>
+                                <p class="text-sm font-semibold mt-0.5">Light / Dark Appearance</p>
+                            </div>
+                            <button onclick="toggleDarkMode()" class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold text-xs shadow-md">
+                                Toggle Theme
+                            </button>
+                        </div>
+
+                        <!-- Language Preference -->
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-xs uppercase text-slate-500">Question Language</h4>
+                                <p class="text-sm font-semibold mt-0.5" id="current-lang-label">English Only</p>
+                            </div>
+                            <button onclick="toggleAppLanguage()" id="lang-toggle-btn" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-md">
+                                Switch to Hindi + EN
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Summary -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <span class="text-xs text-slate-400 font-semibold uppercase">Total Attempted</span>
+                        <p id="prof-attempted" class="text-2xl font-black mt-1">0</p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <span class="text-xs text-slate-400 font-semibold uppercase">Overall Accuracy</span>
+                        <p id="prof-accuracy" class="text-2xl font-black mt-1 text-brand-600">0%</p>
+                    </div>
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <span class="text-xs text-slate-400 font-semibold uppercase">Bookmarks Saved</span>
+                        <p id="prof-bookmarks" class="text-2xl font-black mt-1 text-purple-600">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN DASHBOARD -->
+            <div id="view-admin" class="view-section hidden p-4 max-w-5xl mx-auto space-y-6">
+                <div class="flex items-center justify-between bg-purple-900 text-white p-6 rounded-3xl shadow-xl">
+                    <div>
+                        <span class="text-xs uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full font-bold">Secure Faculty Portal</span>
+                        <h2 class="text-2xl font-black mt-2">Admin Dashboard</h2>
+                        <p class="text-xs text-white/80 mt-1">Manage Questions, Paid Notes, Mind Maps, Videos & Notifications.</p><p class="text-[10px] text-amber-200 mt-2">Demo admin login is not secure for production. Do not publish private content or rely on client-side secrets.</p>
+                    </div>
+                    <button onclick="switchView('home')" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Exit Admin
+                    </button>
+                </div>
+
+                <!-- Content Upload Selector Tabs -->
+                <div class="flex rounded-xl bg-slate-200 dark:bg-slate-800 p-1 flex-wrap gap-1">
+                    <button onclick="switchAdminUploadTab('q')" id="atab-q" class="flex-1 py-2 text-xs font-bold rounded-lg bg-white dark:bg-slate-700 shadow-sm min-w-[100px]">Question</button>
+                    <button onclick="switchAdminUploadTab('rc')" id="atab-rc" class="flex-1 py-2 text-xs font-bold text-slate-500 rounded-lg min-w-[100px]">Revision Card</button>
+                    <button onclick="switchAdminUploadTab('mm')" id="atab-mm" class="flex-1 py-2 text-xs font-bold text-slate-500 rounded-lg min-w-[100px]">Mind Map</button>
+                    <button onclick="switchAdminUploadTab('vid')" id="atab-vid" class="flex-1 py-2 text-xs font-bold text-slate-500 rounded-lg min-w-[100px]">Video</button>
+                    <button onclick="switchAdminUploadTab('notif')" id="atab-notif" class="flex-1 py-2 text-xs font-bold text-slate-500 rounded-lg min-w-[100px]">Notification</button>
+                </div>
+
+                <!-- Admin Form: Question -->
+                <div id="admin-form-q" class="admin-tab-content bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                    <h3 class="font-bold text-base">Add New Bilingual Question</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Subject</label>
+                            <select id="aq-subject" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm">
+                                <option value="Physics">Physics</option>
+                                <option value="Chemistry">Chemistry</option>
+                                <option value="Botany">Botany</option>
+                                <option value="Zoology">Zoology</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Chapter Name</label>
+                            <input type="text" id="aq-chapter" required class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm" placeholder="e.g. Electrostatics / स्थिरवैद्युतिकी">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Exam Year</label>
+                            <select id="aq-year" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm">
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-200 dark:border-slate-800 pt-3 space-y-3">
+                        <span class="text-xs font-extrabold text-blue-600 uppercase">English Version</span>
+                        <textarea id="aq-text-en" rows="2" required class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="Question in English..."></textarea>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="aq-op1-en" placeholder="Option A (EN)" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs">
+                            <input type="text" id="aq-op2-en" placeholder="Option B (EN)" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs">
+                            <input type="text" id="aq-op3-en" placeholder="Option C (EN)" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs">
+                            <input type="text" id="aq-op4-en" placeholder="Option D (EN)" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs">
+                        </div>
+                        <textarea id="aq-exp-en" rows="2" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs" placeholder="Explanation in English..."></textarea>
+                    </div>
+
+                    <div class="border-t border-slate-200 dark:border-slate-800 pt-3 space-y-3">
+                        <span class="text-xs font-extrabold text-emerald-600 uppercase">Hindi Version</span>
+                        <textarea id="aq-text-hi" rows="2" required class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="प्रश्न हिंदी में..."></textarea>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="aq-op1-hi" placeholder="विकल्प A (HI)" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs">
+                            <input type="text" id="aq-op2-hi" placeholder="विकल्प B (HI)" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs">
+                            <input type="text" id="aq-op3-hi" placeholder="विकल्प C (HI)" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs">
+                            <input type="text" id="aq-op4-hi" placeholder="विकल्प D (HI)" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs">
+                        </div>
+                        <textarea id="aq-exp-hi" rows="2" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border text-xs" placeholder="विस्तृत उत्तर (हिंदी)..."></textarea>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Correct Option Index</label>
+                        <select id="aq-correct" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm">
+                            <option value="0">Option A</option>
+                            <option value="1">Option B</option>
+                            <option value="2">Option C</option>
+                            <option value="3">Option D</option>
+                        </select>
+                    </div>
+
+                    <button onclick="adminSaveQuestion()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md text-sm transition">
+                        Publish Question
+                    </button>
+                </div>
+
+                <!-- Admin Form: Revision Card Upload -->
+                <div id="admin-form-rc" class="admin-tab-content hidden bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                    <h3 class="font-bold text-base">Create Revision Card</h3>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Subject</label>
+                        <select id="arc-subject" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm">
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Botany">Botany</option>
+                            <option value="Zoology">Zoology</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Chapter Name</label>
+                        <input type="text" id="arc-chapter" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="e.g. Electrostatics">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Title</label>
+                        <input type="text" id="arc-title" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="Card Title">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Content / Formulas</label>
+                        <textarea id="arc-content" rows="3" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="Bullet points..."></textarea>
+                    </div>
+                    <button onclick="adminSaveRevisionCard()" class="w-full py-3 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-xl shadow-md text-sm transition">
+                        Publish Revision Card
+                    </button>
+                </div>
+
+                <!-- Admin Form: Mind Map Upload -->
+                <div id="admin-form-mm" class="admin-tab-content hidden bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                    <h3 class="font-bold text-base">Upload Mind Map</h3>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Subject</label>
+                        <select id="amm-subject" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm">
+                            <option value="Zoology">Zoology</option>
+                            <option value="Botany">Botany</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Chapter Name</label>
+                        <input type="text" id="amm-chapter" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="Chapter Name">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Mind Map Title</label>
+                        <input type="text" id="amm-title" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="Mind Map Title">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Upload image or PDF (max 1.5 MB)</label>
+                        <input type="file" id="amm-file" accept="image/*,application/pdf" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm">
+                        <p class="text-[11px] text-slate-500 mt-1">For large files, use a hosted URL below. Local uploads save only in this browser.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Or hosted image/PDF URL</label>
+                        <input type="url" id="amm-url" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="https://...">
+                    </div>
+                    <button onclick="adminSaveMindMap()" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-md text-sm transition">
+                        Publish Mind Map
+                    </button>
+                </div>
+
+                <!-- Admin Form: Video -->
+                <div id="admin-form-vid" class="admin-tab-content hidden bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                    <h3 class="font-bold text-base">Add Study Video</h3>
+                    <div><label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Subject</label><select id="av-subject" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm"><option>Physics</option><option>Chemistry</option><option>Botany</option><option>Zoology</option></select></div>
+                    <div><label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Chapter</label><input id="av-chapter" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="e.g. Human Physiology"></div>
+                    <div><label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Video title</label><input id="av-title" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="Video title"></div>
+                    <div><label class="block text-xs font-semibold uppercase text-slate-500 mb-1">YouTube video URL</label><input id="av-url" type="url" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="https://www.youtube.com/watch?v=..."></div>
+                    <button onclick="adminSaveVideo()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md text-sm">Publish Video</button>
+                    <p class="text-xs text-slate-500">This accepts YouTube links, not direct video-file uploads. Published entries are saved in this browser only until shared cloud storage is configured.</p>
+                </div>
+
+                <!-- Admin Form: Notification Banner Broadcast -->
+                <div id="admin-form-notif" class="admin-tab-content hidden bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                    <h3 class="font-bold text-base">Broadcast Notification Bar Message</h3>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Notification Text</label>
+                        <textarea id="admin-notif-input" rows="3" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border text-sm" placeholder="Type announcement message for student notification bar..."></textarea>
+                    </div>
+                    <button onclick="adminSaveNotification()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md text-sm transition">
+                        Update Notification Bar
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- BOTTOM NAVIGATION (Replaced Profile with Chapter-wise) -->
+        <nav class="h-16 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-around px-2 z-30 shrink-0">
+            <button onclick="switchView('home')" id="nav-btn-home" class="flex flex-col items-center justify-center flex-1 py-1 text-brand-600 dark:text-brand-400 transition">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] font-bold mt-1">Home</span>
+            </button>
+            <button onclick="switchView('pyq')" id="nav-btn-pyq" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+                <i class="fa-solid fa-file-lines text-lg"></i>
+                <span class="text-[10px] font-bold mt-1">PYQs</span>
+            </button>
+            <button onclick="switchView('chapterwise')" id="nav-btn-chapterwise" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+                <i class="fa-solid fa-folder-tree text-lg"></i>
+                <span class="text-[10px] font-bold mt-1">Chapters</span>
+            </button>
+            <button onclick="switchView('revision')" id="nav-btn-revision" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+                <i class="fa-solid fa-bolt text-lg"></i>
+                <span class="text-[10px] font-bold mt-1">Revision</span>
+            </button>
+            <button onclick="switchView('video')" id="nav-btn-video" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+                <i class="fa-solid fa-circle-play text-lg"></i><span class="text-[10px] font-bold mt-1">Videos</span>
+            </button>
+            <button onclick="switchView('mindmaps')" id="nav-btn-mindmaps" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">
+                <i class="fa-solid fa-diagram-project text-lg"></i>
+                <span class="text-[10px] font-bold mt-1">Mind Maps</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <script>
+        // Global State Variables
+        let currentUser = null;
+        let isProUser = false;
+        let selectedSubscriptionPlan = 'lifetime';
+        let currentAppLanguage = 'en'; // 'en' for English only, 'hi' for Bilingual (Hindi + English)
+
+        // Comprehensive Mock Data Collections with 2017-2026 PYQs and Paper 1/2
+        let mockQuestions = [
+            { 
+                id: 'q1', 
+                subject: 'Physics', 
+                chapter: 'Electrostatics', 
+                year: '2026', 
+                paper: 'Paper 1',
+                text_en: 'What is the dimension of electric potential?', 
+                text_hi: 'विद्युत विभव की विमा क्या है?',
+                options_en: ['[M L² T⁻³ A⁻¹]', '[M L T⁻² A⁻¹]', '[M¹ L² T⁻² A⁻²]', '[M L² T⁻² A⁻¹]'], 
+                options_hi: ['[M L² T⁻³ A⁻¹]', '[M L T⁻² A⁻¹]', '[M¹ L² T⁻² A⁻²]', '[M L² T⁻² A⁻¹]'], 
+                correct: 0, 
+                explanation_en: 'Potential V = W / Q = [M L² T⁻³ A⁻¹].',
+                explanation_hi: 'विभव V = W / Q = [M L² T⁻³ A⁻¹]।'
+            },
+            { 
+                id: 'q2', 
+                subject: 'Physics', 
+                chapter: 'Current Electricity', 
+                year: '2026', 
+                paper: 'Paper 2',
+                text_en: 'Ohm’s law is valid when the temperature of conductor is:', 
+                text_hi: 'ओम का नियम तब मान्य होता है जब चालक का ताप:',
+                options_en: ['Constant', 'Increasing', 'Decreasing', 'Zero'], 
+                options_hi: ['नियत रहे', 'बढ़ रहा हो', 'घट रहा हो', 'शून्य हो'], 
+                correct: 0, 
+                explanation_en: 'Ohm’s law requires physical conditions like temperature to remain constant.',
+                explanation_hi: 'ओम के नियम के लिए भौतिक अवस्थाएं जैसे ताप नियत रहना आवश्यक है।'
+            },
+            { 
+                id: 'q3', 
+                subject: 'Chemistry', 
+                chapter: 'Biomolecules', 
+                year: '2025', 
+                paper: 'Paper 1',
+                text_en: 'Which vitamin is water-soluble?', 
+                text_hi: 'कौन सा विटामिन जल में घुलनशील है?',
+                options_en: ['Vitamin A', 'Vitamin D', 'Vitamin C', 'Vitamin K'], 
+                options_hi: ['विटामिन A', 'विटामिन D', 'विटामिन C', 'विटामिन K'], 
+                correct: 2, 
+                explanation_en: 'Vitamin C is water-soluble.',
+                explanation_hi: 'विटामिन C जल-घुलनशील है।'
+            },
+            {
+                id: 'q4',
+                subject: 'Botany',
+                chapter: 'Cell Biology',
+                year: '2024',
+                paper: 'Paper 1',
+                text_en: 'Which cell organelle is known as the powerhouse of the cell?',
+                text_hi: 'किस कोशिका अंगक को कोशिका का पावरहाउस कहा जाता है?',
+                options_en: ['Ribosome', 'Mitochondria', 'Golgi apparatus', 'Lysosome'],
+                options_hi: ['राइबोसोम', 'माइटोकॉन्ड्रिया', 'गॉल्जीकाय', 'लसोसोम'],
+                correct: 1,
+                explanation_en: 'Mitochondria generates chemical energy (ATP).',
+                explanation_hi: 'माइटोकॉन्ड्रिया एटीपी के रूप में ऊर्जा उत्पन्न करता है।'
+            },
+            {
+                id: 'q5',
+                subject: 'Zoology',
+                chapter: 'Human Physiology',
+                year: '2024',
+                paper: 'Paper 2',
+                text_en: 'Normal human blood pressure is:',
+                text_hi: 'सामान्य मानव रक्तचाप होता है:',
+                options_en: ['120/80 mm Hg', '140/90 mm Hg', '100/60 mm Hg', '130/85 mm Hg'],
+                options_hi: ['120/80 मिमी एचजी', '140/90 मिमी एचजी', '100/60 मिमी एचजी', '130/85 मिमी एचजी'],
+                correct: 0,
+                explanation_en: 'Standard systolic is 120 and diastolic is 80 mm Hg.',
+                explanation_hi: 'मानक प्रकुंचन 120 और अनुशिथिलन 80 मिमी एचजी होता है।'
+            },
+            {
+                id: 'q6',
+                subject: 'Physics',
+                chapter: 'Kinematics',
+                year: '2023',
+                paper: 'Paper 1',
+                text_en: 'The acceleration of a particle moving with constant velocity is:',
+                text_hi: 'नियत वेग से गतिमान कण का त्वरण होता है:',
+                options_en: ['Zero', 'Constant non-zero', 'Increasing', 'Infinite'],
+                options_hi: ['शून्य', 'नियत अशून्य', 'बढ़ता हुआ', 'अनंत'],
+                correct: 0,
+                explanation_en: 'Constant velocity implies zero acceleration (dv/dt = 0).',
+                explanation_hi: 'नियत वेग का अर्थ है शून्य त्वरण।'
+            },
+            {
+                id: 'q7',
+                subject: 'Chemistry',
+                chapter: 'Chemical Bonding',
+                year: '2022',
+                paper: 'Paper 1',
+                text_en: 'What is the hybridization of carbon in methane (CH₄)?',
+                text_hi: 'मीथेन (CH₄) में कार्बन का संकरण क्या है?',
+                options_en: ['sp³', 'sp²', 'sp', 'sp³d'],
+                options_hi: ['sp³', 'sp²', 'sp', 'sp³d'],
+                correct: 0,
+                explanation_en: 'Methane has tetrahedral geometry with sp³ hybridization.',
+                explanation_hi: 'मीथेन की ज्यामिति चतुष्फलकीय और संकरण sp³ होता है।'
+            },
+            {
+                id: 'q8',
+                subject: 'Botany',
+                chapter: 'Genetics',
+                year: '2021',
+                paper: 'Paper 1',
+                text_en: 'The phenotypic ratio of monohybrid cross in F₂ generation is:',
+                text_hi: 'F₂ पीढ़ी में एकसंकर क्रॉस का दृश्यप्रारूप अनुपात (Phenotypic ratio) होता है:',
+                options_en: ['3:1', '1:2:1', '9:3:3:1', '1:1'],
+                options_hi: ['3:1', '1:2:1', '9:3:3:1', '1:1'],
+                correct: 0,
+                explanation_en: 'Phenotypic ratio is 3:1 (Tall:Dwarf).',
+                explanation_hi: 'दृश्यप्रारूप अनुपात 3:1 होता है।'
+            },
+            {
+                id: 'q9',
+                subject: 'Zoology',
+                chapter: 'Animal Kingdom',
+                year: '2020',
+                paper: 'Paper 1',
+                text_en: 'Water vascular system is characteristic feature of:',
+                text_hi: 'जल संवहन तंत्र किस संघ की विशेषता है?',
+                options_en: ['Echinodermata', 'Porifera', 'Annelida', 'Arthropoda'],
+                options_hi: ['एकाइनेडोमेटा (शूलचर्म)', 'पोरिफेरा', 'एनेलिडा', 'आर्थोपोडा'],
+                correct: 0,
+                explanation_en: 'Echinoderms possess a unique water vascular system.',
+                explanation_hi: 'एकाइनेडोमेटा संघ के जीवों में जल संवहन तंत्र पाया जाता है।'
+            },
+            {
+                id: 'q10',
+                subject: 'Physics',
+                chapter: 'Optics',
+                year: '2019',
+                paper: 'Paper 1',
+                text_en: 'Critical angle is maximum for which color of light?',
+                text_hi: 'प्रकाश के किस रंग के लिए क्रांतिक कोण अधिकतम होता है?',
+                options_en: ['Red', 'Violet', 'Blue', 'Green'],
+                options_hi: ['लाल', 'बैंगनी', 'नीला', 'हरा'],
+                correct: 0,
+                explanation_en: 'Red color has minimum refractive index, hence maximum critical angle.',
+                explanation_hi: 'लाल रंग का अपवर्तनांक सबसे कम होता है, अतः क्रांतिक कोण अधिकतम होता है।'
+            },
+            {
+                id: 'q11',
+                subject: 'Chemistry',
+                captain: 'Solutions',
+                chapter: 'Solutions',
+                year: '2019',
+                paper: 'Paper 2',
+                text_en: 'Which of the following is a colligative property?',
+                text_hi: 'निम्न में से कौन सा अणुसंख्यक गुणधर्म है?',
+                options_en: ['Osmotic pressure', 'Viscosity', 'Surface tension', 'Refractive index'],
+                options_hi: ['परासरण दाब', 'श्यानता', 'पृष्ठ तनाव', 'अपवर्तनांक'],
+                correct: 0,
+                explanation_en: 'Osmotic pressure depends on the number of solute particles.',
+                explanation_hi: 'परासरण दाब विलेय कणों की संख्या पर निर्भर करता है।'
+            },
+            {
+                id: 'q12',
+                subject: 'Botany',
+                chapter: 'Plant Physiology',
+                year: '2018',
+                paper: 'Paper 1',
+                text_en: 'C₄ plants are more efficient than C₃ plants because of:',
+                text_hi: 'C₄ पौधे C₃ पौधों की तुलना में अधिक कुशल होते हैं क्योंकि:',
+                options_en: ['Absence of photorespiration', 'Higher water loss', 'Lower optimum temp', 'More chlorophyll'],
+                options_hi: ['प्रकाश श्वसन की अनुपस्थिति', 'अधिक जल हानि', 'कम अनुकूलतम ताप', 'अधिक क्लोरोफिल'],
+                correct: 0,
+                explanation_en: 'C₄ plants minimize photorespiration.',
+                explanation_hi: 'C₄ पौधों में प्रकाश श्वसन नगण्य होता है।'
+            },
+            {
+                id: 'q13',
+                subject: 'Zoology',
+                chapter: 'Human Reproduction',
+                year: '2017',
+                paper: 'Paper 1',
+                text_en: 'The hormone responsible for milk ejection from mammary glands is:',
+                text_hi: 'स्तन ग्रंथियों से दुग्ध स्त्रावण के लिए उत्तरदायी हॉर्मोन है:',
+                options_en: ['Oxytocin', 'Prolactin', 'Progesterone', 'Estrogen'],
+                options_hi: ['ऑक्सीटोसिन', 'प्रोलैक्टिन', 'प्रोजेस्टेरोन', 'एस्ट्रोजन'],
+                correct: 0,
+                explanation_en: 'Oxytocin triggers milk ejection reflex.',
+                explanation_hi: 'ऑक्सीटोसिन दुग्ध निष्कासन को प्रेरित करता है।'
+            },
+            {
+                id: 'q14',
+                subject: 'Physics',
+                chapter: 'Gravitation',
+                year: '2016',
+                paper: 'Paper 1',
+                text_en: 'Escape velocity from Earth surface is approximately:',
+                text_hi: 'पृथ्वी की सतह से पलायन वेग लगभग होता है:',
+                options_en: ['11.2 km/s', '7.9 km/s', '3.0 km/s', '20.0 km/s'],
+                options_hi: ['11.2 किमी/सेकंड', '7.9 किमी/सेकंड', '3.0 किमी/सेकंड', '20.0 किमी/सेकंड'],
+                correct: 0,
+                explanation_en: 'Escape velocity from Earth is ~11.2 km/s.',
+                explanation_hi: 'पृथ्वी के लिए पलायन वेग लगभग 11.2 किमी/सेकंड है।'
+            },
+            {
+                id: 'q15',
+                subject: 'Physics',
+                chapter: 'Thermodynamics',
+                year: '2016',
+                paper: 'Paper 2',
+                text_en: 'First law of thermodynamics is based on conservation of:',
+                text_hi: 'ऊष्मागतिकी का प्रथम नियम किसके संरक्षण पर आधारित है?',
+                options_en: ['Energy', 'Momentum', 'Charge', 'Mass'],
+                options_hi: ['ऊर्जा', 'संवेग', 'आवेश', 'द्रव्यमान'],
+                correct: 0,
+                explanation_en: 'First law is conservation of energy.',
+                explanation_hi: 'प्रथम नियम ऊर्जा संरक्षण का नियम है।'
+            }
+        ];
+
+        let mockRevisionCards = [
+            { id: 'rc1', subject: 'Physics', chapter: 'Electrostatics', title: 'Electrostatics Formulas', content: '• F = k q₁ q₂ / r²\n• E = F / q\n• V = k q / r' },
+            { id: 'rc2', subject: 'Chemistry', chapter: 'Biomolecules', title: 'Amino Acids Notes', content: '• Essential vs Non-essential amino acids\n• Zwitter ion formation' },
+            { id: 'rc3', subject: 'Botany', chapter: 'Cell Biology', title: 'Cell Cycle Phases', content: '• G1 -> S -> G2 -> M Phase\n• Checkpoints in cell cycle' },
+            { id: 'rc4', subject: 'Zoology', chapter: 'Genetics', title: 'Mendelian Ratios', content: '• Dihybrid ratio = 9:3:3:1\n• Monohybrid ratio = 3:1' },
+            { id: 'rc5', subject: 'Physics', chapter: 'Current Electricity', title: 'Ohm’s Law & Circuits', content: '• V = I R\n• Series: R_eq = R₁ + R₂\n• Parallel: 1/R_eq = 1/R₁ + 1/R₂' }
+        ];
+
+        let mockMindMaps = [
+            { id: 'mm1', subject: 'Zoology', chapter: 'Human Digestion', title: 'Human Digestion Flowchart', url: 'https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&w=800&q=80' },
+            { id: 'mm2', subject: 'Botany', chapter: 'Plant Kingdom', title: 'Plant Kingdom Classification', url: 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80' },
+            { id: 'mm3', subject: 'Physics', chapter: 'Optics', title: 'Ray Optics Summary', url: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=800&q=80' },
+            { id: 'mm4', subject: 'Chemistry', chapter: 'Coordination Compounds', title: 'VBT & CFT Mind Map', url: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=800&q=80' }
+        ];
+
+        let mockVideos = [];
+        // Device-local content persistence. This does NOT sync uploads to other students.
+        try {
+            const savedMaps = JSON.parse(localStorage.getItem('neetpro_admin_mindmaps_v1') || 'null');
+            if (Array.isArray(savedMaps)) mockMindMaps = savedMaps.concat(mockMindMaps.filter(x => !savedMaps.some(y => y.id === x.id)));
+            const savedVideos = JSON.parse(localStorage.getItem('neetpro_admin_videos_v1') || '[]');
+            if (Array.isArray(savedVideos)) mockVideos = savedVideos;
+        } catch (e) { console.warn('Saved content could not be loaded', e); }
+        function saveLocalContent() {
+            try {
+                localStorage.setItem('neetpro_admin_mindmaps_v1', JSON.stringify(mockMindMaps));
+                localStorage.setItem('neetpro_admin_videos_v1', JSON.stringify(mockVideos));
+                return true;
+            } catch (e) {
+                showToast('Storage full. Use a hosted URL or smaller file.', 'info');
+                return false;
+            }
+        }
+        function youtubeEmbed(url) {
+            try {
+                const u = new URL(url);
+                let id = '';
+                if (u.hostname.includes('youtu.be')) id = u.pathname.slice(1);
+                else if (u.hostname.includes('youtube.com')) id = u.searchParams.get('v') || (u.pathname.includes('/embed/') ? u.pathname.split('/embed/')[1].split('/')[0] : '');
+                return /^[A-Za-z0-9_-]{11}$/.test(id) ? 'https://www.youtube-nocookie.com/embed/' + id : '';
+            } catch(e) { return ''; }
+        }
+        window.renderVideos = function() {
+            const el = document.getElementById('videos-container'); if (!el) return;
+            el.innerHTML = mockVideos.length ? mockVideos.map(v => `<article class="bg-white dark:bg-slate-900 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 space-y-2"><div class="text-[10px] uppercase text-indigo-600 font-bold">${escapeHtml(v.subject)} · ${escapeHtml(v.chapter)}</div><h3 class="font-bold text-sm">${escapeHtml(v.title)}</h3><div class="aspect-video rounded-xl overflow-hidden bg-slate-100"><iframe class="w-full h-full" src="${v.embed}" title="${escapeHtml(v.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>${currentUser && currentUser.role === 'admin' ? `<button onclick="deleteVideo('${v.id}')" class="text-xs text-red-600 font-bold">Delete</button>` : ''}</article>`).join('') : '<p class="text-sm text-slate-500 p-4">No videos added yet.</p>';
+        };
+        function escapeHtml(value) { return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+        window.deleteVideo = function(id) { if (!confirm('Delete this video?')) return; mockVideos = mockVideos.filter(v => v.id !== id); saveLocalContent(); renderVideos(); };
+
+        let userProgress = { attempted: 0, correct: 0, bookmarks: [] };
+
+        window.onload = function() {
+            currentUser = { uid: 'std-1', email: 'student@neetpro.com', studentId: 'NEET-STD-8492', role: 'student' };
+            updateUIState();
+            renderQuestions();
+            populateChapterwiseList();
+            renderRevisionCards();
+            renderMindMaps();
+            renderVideos();
+
+            // Run app launch ad for free users
+            triggerAppLaunchAd();
+        };
+
+        window.toggleAppLanguage = function() {
+            currentAppLanguage = currentAppLanguage === 'en' ? 'hi' : 'en';
+            const label = document.getElementById('current-lang-label');
+            const btn = document.getElementById('lang-toggle-btn');
+            if (currentAppLanguage === 'hi') {
+                if (label) label.innerText = 'Bilingual (Hindi + English)';
+                if (btn) btn.innerText = 'Switch to English Only';
+                showToast("Language set to Bilingual (Hindi + English)", "success");
+            } else {
+                if (label) label.innerText = 'English Only';
+                if (btn) btn.innerText = 'Switch to Hindi + EN';
+                showToast("Language set to English Only", "success");
+            }
+            renderQuestions();
+            renderChapterwiseQuestions();
+        };
+
+        window.onYearFilterChange = function() {
+            const yr = document.getElementById('filter-year').value;
+            const paperSelect = document.getElementById('filter-paper');
+            // Years with Paper 1 and Paper 2: 2016, 2019, 2024, 2026
+            const dualPaperYears = ['2016', '2019', '2024', '2026'];
+            if (dualPaperYears.includes(yr)) {
+                paperSelect.classList.remove('hidden');
+            } else {
+                paperSelect.classList.add('hidden');
+                paperSelect.value = '';
+            }
+            renderQuestions();
+        };
+
+        window.renderQuestions = function() {
+            const container = document.getElementById('questions-container');
+            const sSub = document.getElementById('filter-subject').value;
+            const sYr = document.getElementById('filter-year').value;
+            const sPaper = document.getElementById('filter-paper').value;
+
+            let filtered = mockQuestions.filter(q => {
+                if (sSub && q.subject !== sSub) return false;
+                if (sYr && q.year !== sYr) return false;
+                if (sPaper && q.paper !== sPaper) return false;
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="bg-white dark:bg-slate-900 rounded-2xl p-8 text-center text-slate-400 text-sm">No questions found matching selected filters.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map((q, idx) => `
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-brand-50 text-brand-700 dark:bg-brand-950/50 dark:text-brand-300">${q.subject}</span>
+                            <span class="text-xs text-slate-400 font-medium">${q.chapter}</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            ${q.paper ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800">${q.paper}</span>` : ''}
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500">${q.year}</span>
+                        </div>
+                    </div>
+
+                    <!-- Question Text (English only or Bilingual depending on preference) -->
+                    <div class="space-y-1">
+                        <p class="font-semibold text-sm text-slate-900 dark:text-slate-100">${idx + 1}. ${q.text_en}</p>
+                        ${currentAppLanguage === 'hi' ? `<p class="font-medium text-sm text-slate-600 dark:text-slate-300">(HI) ${q.text_hi}</p>` : ''}
+                    </div>
+
+                    <!-- Options -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        ${q.options_en.map((opEn, oIdx) => `
+                            <button onclick="checkAnswer('${q.id}', ${oIdx})" id="opt-${q.id}-${oIdx}" class="w-full text-left p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition">
+                                <span class="font-bold mr-2 text-slate-400">${String.fromCharCode(65 + oIdx)}.</span>
+                                <div><strong>${opEn}</strong></div>
+                                ${currentAppLanguage === 'hi' ? `<div class="text-slate-500 dark:text-slate-400">${q.options_hi[oIdx]}</div>` : ''}
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div id="exp-${q.id}" class="hidden p-3 rounded-xl bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 text-xs text-brand-900 dark:text-brand-200 space-y-1">
+                        <div><strong>Explanation:</strong> ${q.explanation_en}</div>
+                        ${currentAppLanguage === 'hi' ? `<div><strong>स्पष्टीकरण:</strong> ${q.explanation_hi}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        window.populateChapterwiseList = function() {
+            const subject = document.getElementById('cw-subject').value;
+            const chapterSelect = document.getElementById('cw-chapter');
+            const chapters = [...new Set(mockQuestions.filter(q => q.subject === subject).map(q => q.chapter))];
+
+            chapterSelect.innerHTML = '<option value="">Select Chapter</option>' + 
+                chapters.map(c => `<option value="${c}">${c}</option>`).join('');
+            renderChapterwiseQuestions();
+        };
+
+        window.renderChapterwiseQuestions = function() {
+            const container = document.getElementById('chapterwise-questions-container');
+            const lockBanner = document.getElementById('chapterwise-lock-banner');
+            const subject = document.getElementById('cw-subject').value;
+            const chapter = document.getElementById('cw-chapter').value;
+
+            // Determine if the selected chapter is among the first 3 chapters of this subject
+            const allChaptersForSubject = [...new Set(mockQuestions.filter(q => q.subject === subject).map(q => q.chapter))];
+            const chapterIndex = allChaptersForSubject.indexOf(chapter);
+            
+            // First 3 chapters (index 0, 1, 2) are FREE for everyone! Beyond 3 requires Pro.
+            const isChapterFree = chapterIndex >= 0 && chapterIndex < 3;
+
+            if (chapter && !isChapterFree && !isProUser) {
+                lockBanner.classList.remove('hidden');
+                container.innerHTML = '';
+                return;
+            } else {
+                lockBanner.classList.add('hidden');
+            }
+
+            let filtered = mockQuestions.filter(q => q.subject === subject && (!chapter || q.chapter === chapter));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="bg-white dark:bg-slate-900 rounded-2xl p-8 text-center text-slate-400 text-sm">No questions found for this chapter. Try selecting a chapter.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map((q, idx) => `
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-brand-50 text-brand-700">${q.chapter}</span>
+                        <span class="text-xs text-slate-400 font-medium">NEET PYQ (${q.year})</span>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="font-semibold text-sm">${idx + 1}. ${q.text_en}</p>
+                        ${currentAppLanguage === 'hi' ? `<p class="font-medium text-sm text-slate-600 dark:text-slate-300">(HI) ${q.text_hi}</p>` : ''}
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        ${q.options_en.map((opEn, oIdx) => `
+                            <button onclick="checkAnswer('${q.id}', ${oIdx})" id="opt-cw-${q.id}-${oIdx}" class="w-full text-left p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs font-medium">
+                                <span class="font-bold mr-2 text-slate-400">${String.fromCharCode(65 + oIdx)}.</span>
+                                <div><strong>${opEn}</strong></div>
+                                ${currentAppLanguage === 'hi' ? `<div class="text-slate-500">${q.options_hi[oIdx]}</div>` : ''}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        window.handleLogin = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            currentUser = { uid: 'u-' + Date.now(), email: email, studentId: 'NEET-STD-' + Math.floor(1000 + Math.random() * 9000), role: email.includes('admin') ? 'admin' : 'student' };
+            updateUIState();
+            switchView('home'); // Redirect to Home page upon login
+            showToast("Logged in successfully! Welcome to NEET Pro.", "success");
+        };
+
+        window.handleRegister = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('reg-email').value;
+            currentUser = { uid: 'u-' + Date.now(), email: email, studentId: 'NEET-STD-' + Math.floor(1000 + Math.random() * 9000), role: 'student' };
+            updateUIState();
+            switchView('home'); // Redirect to Home page upon registration
+            showToast("Account created successfully! Welcome to NEET Pro.", "success");
+        };
+
+        window.triggerAppLaunchAd = function() {
+            if (isProUser) return;
+
+            const adModal = document.getElementById('app-launch-ad');
+            const skipBtn = document.getElementById('launch-ad-skip-btn');
+            const countdownEl = document.getElementById('launch-ad-countdown');
+            const progressBar = document.getElementById('launch-ad-progress');
+
+            adModal.classList.remove('hidden');
+            let timer = 5;
+            countdownEl.innerText = timer;
+            skipBtn.disabled = true;
+            skipBtn.innerText = "Please wait for launch ad...";
+            progressBar.style.width = '0%';
+
+            setTimeout(() => progressBar.style.width = '100%', 100);
+
+            let launchAdInterval = setInterval(() => {
+                timer--;
+                countdownEl.innerText = timer;
+                if (timer <= 0) {
+                    clearInterval(launchAdInterval);
+                    skipBtn.disabled = false;
+                    skipBtn.innerText = "Skip Ad & Continue to App →";
+                    skipBtn.className = "w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition cursor-pointer";
+                }
+            }, 1000);
+        };
+
+        window.closeLaunchAd = function() {
+            document.getElementById('app-launch-ad').classList.add('hidden');
+            showToast("Welcome to NEET UG Pro!", "success");
+        };
+
+        window.openPricingModal = function() {
+            let existing = document.getElementById('pricing-modal');
+            if (existing) existing.remove();
+
+            const modalHtml = `
+                <div id="pricing-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-5 text-center relative">
+                        <button onclick="document.getElementById('pricing-modal').remove()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl mx-auto flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-crown"></i></div>
+                        <div>
+                            <h3 class="text-xl font-black">Upgrade to NEET Pro</h3>
+                            <p class="text-xs text-slate-500 mt-1">Unlock all Chapterwise filters, Mind Maps & Revision Notes!</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div onclick="selectPlan('3months', 300)" id="plan-3months" class="p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:border-amber-500 cursor-pointer transition text-left space-y-2">
+                                <span class="text-[10px] uppercase font-extrabold px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-slate-600 dark:text-slate-300">Quarterly</span>
+                                <h4 class="text-lg font-black">₹300</h4>
+                                <p class="text-[11px] text-slate-400">For 3 Months</p>
+                            </div>
+                            <div onclick="selectPlan('lifetime', 500)" id="plan-lifetime" class="p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 cursor-pointer transition text-left space-y-2 relative">
+                                <span class="absolute -top-2.5 right-2 bg-amber-500 text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full">Best Value</span>
+                                <span class="text-[10px] uppercase font-extrabold px-2 py-0.5 bg-amber-200/50 text-amber-800 rounded">Lifetime</span>
+                                <h4 class="text-lg font-black text-amber-600">₹500</h4>
+                                <p class="text-[11px] text-slate-400">Lifetime Access</p>
+                            </div>
+                        </div>
+                        <button onclick="confirmSubscription()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold rounded-2xl text-sm shadow-lg hover:brightness-110 transition">
+                            Proceed to Secure Payment
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        };
+
+        window.selectPlan = function(planKey, price) {
+            selectedSubscriptionPlan = planKey;
+            document.getElementById('plan-3months').className = planKey === '3months' ? 'p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 cursor-pointer transition text-left space-y-2' : 'p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-800 cursor-pointer transition text-left space-y-2';
+            document.getElementById('plan-lifetime').className = planKey === 'lifetime' ? 'p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 cursor-pointer transition text-left space-y-2 relative' : 'p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-800 cursor-pointer transition text-left space-y-2 relative';
+        };
+
+        window.confirmSubscription = function() {
+            isProUser = true;
+            const modal = document.getElementById('pricing-modal');
+            if (modal) modal.remove();
+            const launchAd = document.getElementById('app-launch-ad');
+            if (launchAd) launchAd.classList.add('hidden');
+            
+            updateUIState();
+            renderMindMaps();
+            renderRevisionCards();
+            renderChapterwiseQuestions();
+            showToast(`NEET Pro Plan Activated Successfully (${selectedSubscriptionPlan === '3months' ? '₹300 for 3 Months' : '₹500 Lifetime'})!`, "success");
+        };
+
+        window.updateUIState = function() {
+            if (!currentUser) return;
+            document.getElementById('auth-screen').classList.add('hidden');
+            const isAdm = currentUser.role === 'admin';
+            document.getElementById('admin-panel-btn').classList.toggle('hidden', !isAdm);
+            
+            const badge = document.getElementById('user-badge');
+            const profileTier = document.getElementById('profile-tier');
+            const studentIdEl = document.getElementById('profile-student-id');
+            if (studentIdEl) studentIdEl.innerText = currentUser.studentId || 'NEET-STD-8492';
+
+            if (isAdm) {
+                badge.innerText = 'Admin Portal';
+                if (profileTier) profileTier.innerText = 'Admin Portal';
+            } else if (isProUser) {
+                badge.innerText = '⚡ Pro Subscriber';
+                if (profileTier) profileTier.innerText = '⚡ Pro Subscriber';
+                document.getElementById('upgrade-pro-btn')?.classList.add('hidden');
+            } else {
+                badge.innerText = 'Free Student Plan';
+                if (profileTier) profileTier.innerText = 'Free Student Plan';
+            }
+        };
+
+        window.enableAdminPortal = function() {
+            const code = prompt("Enter Admin Secret Key:");
+            if (code === "admin123" || code === "admin@neetpro.com") {
+                currentUser = { uid: 'admin-1', email: 'admin@neetpro.com', role: 'admin' };
+                updateUIState();
+                switchView('admin');
+                showToast("Admin access granted!", "success");
+            } else {
+                showToast("Invalid admin key!", "info");
+            }
+        };
+
+        window.renderQuestions = function() {
+            const container = document.getElementById('questions-container');
+            const sSub = document.getElementById('filter-subject').value;
+            const sYr = document.getElementById('filter-year').value;
+
+            let filtered = mockQuestions.filter(q => {
+                if (sSub && q.subject !== sSub) return false;
+                if (sYr && q.year !== sYr) return false;
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="bg-white dark:bg-slate-900 rounded-2xl p-8 text-center text-slate-400 text-sm">No questions found matching selected filters.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map((q, idx) => `
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-brand-50 text-brand-700 dark:bg-brand-950/50 dark:text-brand-300">${q.subject}</span>
+                            <span class="text-xs text-slate-400 font-medium">${q.chapter}</span>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500">${q.year}</span>
+                    </div>
+
+                    <!-- Bilingual Question Text -->
+                    <div class="space-y-1">
+                        <p class="font-semibold text-sm text-slate-900 dark:text-slate-100">${idx + 1}. (EN) ${q.text_en}</p>
+                        <p class="font-medium text-sm text-slate-600 dark:text-slate-300">(HI) ${q.text_hi}</p>
+                    </div>
+
+                    <!-- Bilingual Options -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        ${q.options_en.map((opEn, oIdx) => `
+                            <button onclick="checkAnswer('${q.id}', ${oIdx})" id="opt-${q.id}-${oIdx}" class="w-full text-left p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition">
+                                <span class="font-bold mr-2 text-slate-400">${String.fromCharCode(65 + oIdx)}.</span>
+                                <div><strong>${opEn}</strong></div>
+                                <div class="text-slate-500 dark:text-slate-400">${q.options_hi[oIdx]}</div>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div id="exp-${q.id}" class="hidden p-3 rounded-xl bg-brand-50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 text-xs text-brand-900 dark:text-brand-200 space-y-1">
+                        <div><strong>Explanation (EN):</strong> ${q.explanation_en}</div>
+                        <div><strong>स्पष्टीकरण (HI):</strong> ${q.explanation_hi}</div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        window.populateChapterwiseList = function() {
+            const subject = document.getElementById('cw-subject').value;
+            const chapterSelect = document.getElementById('cw-chapter');
+            const chapters = [...new Set(mockQuestions.filter(q => q.subject === subject).map(q => q.chapter))];
+
+            chapterSelect.innerHTML = '<option value="">Select Chapter</option>' + 
+                chapters.map(c => `<option value="${c}">${c}</option>`).join('');
+            renderChapterwiseQuestions();
+        };
+
+        window.renderChapterwiseQuestions = function() {
+            const container = document.getElementById('chapterwise-questions-container');
+            const lockBanner = document.getElementById('chapterwise-lock-banner');
+            const contentArea = document.getElementById('chapterwise-content-area');
+
+            if (!isProUser) {
+                lockBanner.classList.remove('hidden');
+                contentArea.classList.add('hidden');
+                return;
+            } else {
+                lockBanner.classList.add('hidden');
+                contentArea.classList.remove('hidden');
+            }
+
+            const subject = document.getElementById('cw-subject').value;
+            const chapter = document.getElementById('cw-chapter').value;
+
+            let filtered = mockQuestions.filter(q => q.subject === subject && (!chapter || q.chapter === chapter));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="bg-white dark:bg-slate-900 rounded-2xl p-8 text-center text-slate-400 text-sm">No questions found for this chapter.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map((q, idx) => `
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-brand-50 text-brand-700">${q.chapter}</span>
+                        <span class="text-xs text-slate-400 font-medium">${q.year}</span>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="font-semibold text-sm">${idx + 1}. (EN) ${q.text_en}</p>
+                        <p class="font-medium text-sm text-slate-600 dark:text-slate-300">(HI) ${q.text_hi}</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        ${q.options_en.map((opEn, oIdx) => `
+                            <button onclick="checkAnswer('${q.id}', ${oIdx})" id="opt-cw-${q.id}-${oIdx}" class="w-full text-left p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs font-medium">
+                                <span class="font-bold mr-2 text-slate-400">${String.fromCharCode(65 + oIdx)}.</span>
+                                <div><strong>${opEn}</strong></div>
+                                <div class="text-slate-500">${q.options_hi[oIdx]}</div>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        window.checkAnswer = function(qId, selectedIdx) {
+            const q = mockQuestions.find(item => item.id === qId);
+            if (!q) return;
+
+            userProgress.attempted++;
+            const expEl = document.getElementById(`exp-${qId}`);
+            if (expEl) expEl.classList.remove('hidden');
+
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`opt-${qId}-${i}`) || document.getElementById(`opt-cw-${qId}-${i}`);
+                if (!btn) continue;
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.className = "w-full text-left p-3 rounded-xl bg-emerald-500 text-white font-bold text-xs shadow-md";
+                } else if (i === selectedIdx) {
+                    btn.className = "w-full text-left p-3 rounded-xl bg-rose-500 text-white font-bold text-xs shadow-md";
+                }
+            }
+
+            if (selectedIdx === q.correct) userProgress.correct++;
+            updateStats();
+        };
+
+        function updateStats() {
+            document.getElementById('stat-attempted').innerText = userProgress.attempted;
+            document.getElementById('prof-attempted').innerText = userProgress.attempted;
+
+            const acc = userProgress.attempted > 0 ? Math.round((userProgress.correct / userProgress.attempted) * 100) : 0;
+            document.getElementById('stat-accuracy').innerText = acc + '%';
+            document.getElementById('prof-accuracy').innerText = acc + '%';
+        }
+
+        window.renderRevisionCards = function() {
+            const container = document.getElementById('revision-container');
+            const lockBanner = document.getElementById('revision-lock-banner');
+
+            const allowedCards = isProUser ? mockRevisionCards : mockRevisionCards.slice(0, 3);
+            
+            if (!isProUser && mockRevisionCards.length > 3) {
+                lockBanner.classList.remove('hidden');
+            } else {
+                lockBanner.classList.add('hidden');
+            }
+
+            container.innerHTML = allowedCards.map(rc => `
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-purple-50 text-purple-600">${rc.subject}</span>
+                        <span class="text-[10px] text-slate-400">${rc.chapter}</span>
+                    </div>
+                    <h3 class="font-bold text-sm">${rc.title}</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">${rc.content}</p>
+                </div>
+            `).join('');
+        };
+
+        window.renderMindMaps = function() {
+            const container = document.getElementById('mindmaps-container');
+            const lockBanner = document.getElementById('mindmaps-lock-banner');
+
+            const allowedMindMaps = isProUser ? mockMindMaps : mockMindMaps.slice(0, 3);
+
+            if (!isProUser && mockMindMaps.length > 3) {
+                lockBanner.classList.remove('hidden');
+            } else {
+                lockBanner.classList.add('hidden');
+            }
+
+            container.innerHTML = allowedMindMaps.map(mm => `
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-600">${mm.subject}</span>
+                        <span class="text-[10px] text-slate-400">${mm.chapter}</span>
+                    </div>
+                    <h3 class="font-bold text-sm">${mm.title}</h3>
+                    <div class="rounded-2xl overflow-hidden border aspect-video bg-slate-100">${String(mm.url || '').toLowerCase().includes('.pdf') || String(mm.url || '').startsWith('data:application/pdf') ? `<a href="${mm.url}" target="_blank" rel="noopener" class="w-full h-full flex items-center justify-center text-indigo-600 font-bold"><i class="fa-solid fa-file-pdf text-4xl mr-3"></i>Open PDF</a>` : `<a href="${mm.url}" target="_blank" rel="noopener"><img src="${mm.url}" alt="${mm.title}" class="w-full h-full object-contain"></a>`}</div>
+                    ${currentUser && currentUser.role === 'admin' && String(mm.id).startsWith('mm-') ? `<button onclick="deleteMindMap('${mm.id}')" class="text-xs text-red-600 font-bold">Delete</button>` : ''}
+                </div>
+            `).join('');
+        };
+
+        window.switchView = function(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            ['home', 'pyq', 'chapterwise', 'revision', 'mindmaps', 'video'].forEach(v => {
+                const btn = document.getElementById(`nav-btn-${v}`);
+                if (btn) btn.className = v === viewId ? "flex flex-col items-center justify-center flex-1 py-1 text-brand-600 dark:text-brand-400 transition" : "flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition";
+            });
+            if (viewId === 'video') renderVideos();
+            if (viewId === 'chapterwise') {
+                renderChapterwiseQuestions();
+            }
+        };
+
+        window.switchAuthTab = function(tab) {
+            document.getElementById('form-login').classList.toggle('hidden', tab !== 'login');
+            document.getElementById('form-register').classList.toggle('hidden', tab !== 'register');
+            document.getElementById('tab-login').className = tab === 'login' ? 'flex-1 py-2 text-sm font-semibold rounded-lg bg-white dark:bg-slate-700 shadow-sm transition' : 'flex-1 py-2 text-sm font-semibold text-slate-500 rounded-lg transition';
+            document.getElementById('tab-register').className = tab === 'register' ? 'flex-1 py-2 text-sm font-semibold rounded-lg bg-white dark:bg-slate-700 shadow-sm transition' : 'flex-1 py-2 text-sm font-semibold text-slate-500 rounded-lg transition';
+        };
+
+        window.handleLogin = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            currentUser = { uid: 'u-' + Date.now(), email: email, studentId: 'NEET-STD-' + Math.floor(1000 + Math.random() * 9000), role: email.includes('admin') ? 'admin' : 'student' };
+            updateUIState();
+            showToast("Logged in successfully!", "success");
+        };
+
+        window.handleRegister = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('reg-email').value;
+            currentUser = { uid: 'u-' + Date.now(), email: email, studentId: 'NEET-STD-' + Math.floor(1000 + Math.random() * 9000), role: 'student' };
+            updateUIState();
+            showToast("Account created successfully!", "success");
+        };
+
+        window.filterBySubject = function(subject) {
+            document.getElementById('filter-subject').value = subject;
+            switchView('pyq');
+            renderQuestions();
+        };
+
+        window.switchAdminUploadTab = function(tab) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            ['q', 'rc', 'mm', 'vid', 'notif'].forEach(t => {
+                const btn = document.getElementById(`atab-${t}`);
+                if (btn) btn.className = t === tab ? "flex-1 py-2 text-xs font-bold rounded-lg bg-white dark:bg-slate-700 shadow-sm" : "flex-1 py-2 text-xs font-bold text-slate-500 rounded-lg";
+            });
+            const targetEl = document.getElementById(`admin-form-${tab}`);
+            if (targetEl) targetEl.classList.remove('hidden');
+        };
+
+        window.adminSaveQuestion = function() {
+            const newQ = {
+                id: 'q-' + Date.now(),
+                subject: document.getElementById('aq-subject').value,
+                chapter: document.getElementById('aq-chapter').value,
+                year: document.getElementById('aq-year').value,
+                text_en: document.getElementById('aq-text-en').value,
+                text_hi: document.getElementById('aq-text-hi').value,
+                options_en: [
+                    document.getElementById('aq-op1-en').value,
+                    document.getElementById('aq-op2-en').value,
+                    document.getElementById('aq-op3-en').value,
+                    document.getElementById('aq-op4-en').value
+                ],
+                options_hi: [
+                    document.getElementById('aq-op1-hi').value,
+                    document.getElementById('aq-op2-hi').value,
+                    document.getElementById('aq-op3-hi').value,
+                    document.getElementById('aq-op4-hi').value
+                ],
+                correct: parseInt(document.getElementById('aq-correct').value),
+                explanation_en: document.getElementById('aq-exp-en').value,
+                explanation_hi: document.getElementById('aq-exp-hi').value
+            };
+
+            mockQuestions.unshift(newQ);
+            renderQuestions();
+            populateChapterwiseList();
+            showToast("Bilingual Question published successfully!", "success");
+        };
+
+        window.adminSaveRevisionCard = function() {
+            const newRC = {
+                id: 'rc-' + Date.now(),
+                subject: document.getElementById('arc-subject').value,
+                chapter: document.getElementById('arc-chapter').value || 'General Chapter',
+                title: document.getElementById('arc-title').value,
+                content: document.getElementById('arc-content').value
+            };
+            mockRevisionCards.unshift(newRC);
+            renderRevisionCards();
+            showToast("Paid Revision Card published!", "success");
+        };
+
+        window.adminSaveMindMap = async function() {
+            const title = document.getElementById('amm-title').value.trim();
+            const fileInput = document.getElementById('amm-file');
+            const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+            let url = document.getElementById('amm-url').value.trim();
+            if (!title) return showToast('Enter a mind map title first.', 'info');
+            if (file) {
+                if (file.size > 1.5 * 1024 * 1024) return showToast('File must be 1.5 MB or smaller for local save.', 'info');
+                if (!(file.type.startsWith('image/') || file.type === 'application/pdf')) return showToast('Choose an image or PDF.', 'info');
+                url = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file); }).catch(() => '');
+            }
+            if (!url) return showToast('Choose a file or enter a hosted URL.', 'info');
+            const newMM = { id: 'mm-' + Date.now(), subject: document.getElementById('amm-subject').value, chapter: document.getElementById('amm-chapter').value.trim() || 'General Chapter', title, url };
+            mockMindMaps.unshift(newMM);
+            if (!saveLocalContent()) { mockMindMaps.shift(); return; }
+            renderMindMaps(); fileInput.value = ''; document.getElementById('amm-url').value = ''; document.getElementById('amm-title').value = ''; document.getElementById('amm-chapter').value = '';
+            showToast('Mind map saved in this browser.', 'success');
+        };
+        window.deleteMindMap = function(id) { if (!confirm('Delete this mind map?')) return; mockMindMaps = mockMindMaps.filter(m => m.id !== id); saveLocalContent(); renderMindMaps(); };
+        window.adminSaveVideo = function() {
+            const title = document.getElementById('av-title').value.trim();
+            const rawUrl = document.getElementById('av-url').value.trim();
+            const embed = youtubeEmbed(rawUrl);
+            if (!title) return showToast('Enter a video title.', 'info');
+            if (!embed) return showToast('Enter a valid YouTube video link.', 'info');
+            const v = {id:'vid-' + Date.now(), subject:document.getElementById('av-subject').value, chapter:document.getElementById('av-chapter').value.trim() || 'General Chapter', title, url:rawUrl, embed};
+            mockVideos.unshift(v);
+            if (!saveLocalContent()) { mockVideos.shift(); return; }
+            renderVideos(); document.getElementById('av-title').value=''; document.getElementById('av-url').value=''; document.getElementById('av-chapter').value='';
+            showToast('Video saved in this browser.', 'success');
+        };
+
+        window.adminSaveNotification = function() {
+            const txt = document.getElementById('admin-notif-input').value;
+            if (!txt) return;
+            document.getElementById('admin-marquee-text').innerText = txt;
+            showToast("Notification bar updated successfully!", "success");
+        };
+
+        window.showToast = function(msg, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            let bg = type === 'success' ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-white';
+            toast.className = `${bg} px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold flex items-center space-x-2`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        };
+
+        window.logout = function() { currentUser = null; document.getElementById('auth-screen').classList.remove('hidden'); };
+        window.fillStudentDemo = function() { document.getElementById('login-email').value = 'student@neetpro.com'; document.getElementById('login-password').value = 'student123'; };
+        window.toggleDarkMode = function() { document.documentElement.classList.toggle('dark'); };
+    </script>
+</body>
+</html>
