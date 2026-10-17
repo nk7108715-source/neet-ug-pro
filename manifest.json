@@ -1,0 +1,11 @@
+{
+  "name": "NEET UG Pro",
+  "short_name": "NEET Pro",
+  "description": "NEET UG MCQ practice and revision",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#4f46e5",
+  "icons": []
+}
