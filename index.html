@@ -29,7 +29,7 @@
                 <span id="ad-timer" class="text-3xl font-black text-indigo-600">5</span>
                 <p class="text-[10px] text-slate-500 uppercase mt-1">Skipping in seconds...</p>
             </div>
-            <button id="skip-ad-btn" disabled class="w-full bg-slate-300 text-slate-600 font-bold py-2.5 rounded-xl cursor-not-allowed transition">Skip Ad</button>
+            <button id="skip-ad-btn" disabled class="w-full bg-slate-300 text-slate-600 font-bold py-2.5 rounded-xl cursor-not-allowed transition">Please wait...</button>
         </div>
     </div>
 
@@ -179,7 +179,7 @@
                 <h3 class="font-bold text-lg">Pay ₹200 (Quarterly) or ₹500 (Annual)</h3>
                 <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-xl inline-block space-y-2">
                     <i class="fa-solid fa-qrcode text-7xl text-indigo-600"></i>
-                    <p class="text-xs text-slate-500">Payee: <strong>Naresh Kumar</strong>[cite: 8]</p>
+                    <p class="text-xs text-slate-500">Payee: <strong>Naresh Kumar</strong></p>
                     <p class="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-bold">UPI ID: n.kumar-50495@ptyes</p>
                 </div>
                 <div class="space-y-3 pt-2 text-left">
@@ -253,7 +253,7 @@
 
     <!-- App Logic Script -->
     <script>
-        // FIREBASE CONFIG (Aapki keys)
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyC1jMxXA7wuoGTe5SMRUtBQkgusAyNTW9s",
             authDomain: "neet-ug-pro.firebaseapp.com",
@@ -297,6 +297,5 @@
             }
         }
 
-        // Startup Ad
-        let adSec = 5;
-    
+        // Startup Ad (Fixed Timer & Auto-Dismiss)
+        l
