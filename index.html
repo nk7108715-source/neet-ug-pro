@@ -1,49 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEET UG Pro - Ultimate Exam Preparation</title>
     <meta name="theme-color" content="#4f46e5">
     <link rel="manifest" href="./manifest.json">
-    <!-- Tailwind CSS CDN -->
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+    
+    <!-- Razorpay Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <!-- Navigation Header -->
-    <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
+    <!-- Firebase SDKs (v9/v10 Compatibility Mode) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col pb-20 transition-colors duration-200" id="body-theme">
+
+    <!-- Startup 5-Sec Ad Overlay -->
+    <div id="startup-ad" class="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
+            <span class="bg-indigo-100 text-indigo-700 text-xs px-3 py-1 rounded-full font-bold">Sponsored Ad</span>
+            <h3 class="text-xl font-extrabold text-slate-900">NEET Crash Course 2026</h3>
+            <p class="text-xs text-slate-600">Boost your score with top AI medical faculty notes and mock tests.</p>
+            <div class="bg-indigo-50 border border-indigo-100 py-6 rounded-xl">
+                <span id="ad-timer" class="text-3xl font-black text-indigo-600">5</span>
+                <p class="text-[10px] text-slate-500 uppercase mt-1">Skipping in seconds...</p>
+            </div>
+            <button id="skip-ad-btn" disabled class="w-full bg-slate-300 text-slate-600 font-bold py-2.5 rounded-xl cursor-not-allowed transition">Skip Ad</button>
+        </div>
+    </div>
+
+    <!-- Video 10-Sec Ad Overlay -->
+    <div id="video-ad-modal" class="hidden fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
+            <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-bold">Watch Ad to Unlock Video</span>
+            <h3 class="text-lg font-bold text-slate-900">Concept Revision Video</h3>
+            <div class="bg-slate-100 py-6 rounded-xl">
+                <span id="video-ad-timer" class="text-3xl font-black text-amber-600">10</span>
+                <p class="text-[10px] text-slate-500 uppercase mt-1">Ad playing...</p>
+            </div>
+            <button id="close-video-ad" disabled class="w-full bg-slate-300 text-slate-600 font-bold py-2.5 rounded-xl cursor-not-allowed">Please wait...</button>
+        </div>
+    </div>
+
+    <!-- Top Header -->
+    <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2 cursor-pointer" onclick="router('home')">
                 <i class="fa-solid fa-graduation-cap text-2xl"></i>
                 <span class="text-xl font-bold tracking-wide">NEET UG Pro</span>
             </div>
-            <nav class="hidden md:flex space-x-6 text-sm font-medium">
-                <button onclick="router('home')" class="hover:text-indigo-200 transition">Home</button>
-                <button onclick="router('practice')" class="hover:text-indigo-200 transition">Practice & PYQs</button>
-                <button onclick="router('revision')" class="hover:text-indigo-200 transition">Revision Cards</button>
-                <button onclick="router('mindmaps')" class="hover:text-indigo-200 transition">Mind Maps</button>
-                <button onclick="router('pro')" class="text-amber-300 font-semibold hover:text-amber-200 transition"><i class="fa-solid fa-crown"></i> Pro Plans</button>
-            </nav>
-            <div class="flex items-center space-x-3">
-                <button id="auth-btn" onclick="openAuthModal()" class="bg-white text-indigo-600 px-4 py-1.5 rounded-lg text-sm font-semibold shadow hover:bg-indigo-50 transition">Login / Register</button>
+            
+            <div class="flex items-center space-x-4">
+                <!-- Notifications -->
+                <button onclick="openNotifications()" class="relative text-white hover:text-indigo-200 transition">
+                    <i class="fa-solid fa-bell text-lg"></i>
+                    <span class="absolute -top-1 -right-1 bg-amber-400 text-slate-900 text-[10px] font-bold px-1 rounded-full">2</span>
+                </button>
+
+                <!-- Three-Dot Menu -->
+                <div class="relative">
+                    <button onclick="toggleMenu()" class="text-white hover:text-indigo-200 p-1 transition">
+                        <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
+                    </button>
+                    <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-52 bg-white text-slate-800 rounded-xl shadow-xl border border-slate-200 py-2 z-50">
+                        <button onclick="router('profile'); toggleMenu();" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 flex items-center space-x-2"><i class="fa-solid fa-user w-5 text-indigo-600"></i><span>Profile / Auth</span></button>
+                        <button onclick="toggleDarkMode(); toggleMenu();" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 flex items-center space-x-2"><i class="fa-solid fa-moon w-5 text-indigo-600"></i><span id="dark-mode-text">Night Mode</span></button>
+                        <button onclick="router('about'); toggleMenu();" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 flex items-center space-x-2"><i class="fa-solid fa-info-circle w-5 text-indigo-600"></i><span>About App</span></button>
+                        <button onclick="promptAdminLogin(); toggleMenu();" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 flex items-center space-x-2 border-t border-slate-100"><i class="fa-solid fa-shield-halved w-5 text-amber-600"></i><span>Admin Access</span></button>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Dynamic Content Container -->
+    <!-- Main Container -->
     <main id="app-container" class="flex-grow max-w-7xl w-full mx-auto px-4 py-6">
-        <!-- Default Home View -->
+        
+        <!-- Home View -->
         <div id="view-home" class="space-y-8">
             <div class="bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-2xl p-8 shadow-xl flex flex-col md:flex-row justify-between items-center">
                 <div class="space-y-4 max-w-xl">
                     <span class="bg-indigo-500 text-indigo-100 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">Updated for 2026</span>
-                    <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Crack NEET UG with Precision & Practice</h1>
-                    <p class="text-indigo-100 text-sm md:text-base">Access comprehensive Chapter-wise PYQs, Bilingual Questions, Smart Revision Cards, and Performance Analytics.</p>
+                    <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Crack NEET UG with Precision</h1>
+                    <p class="text-indigo-100 text-sm md:text-base">Access comprehensive PYQs, Free Mind Maps, and Chapterwise tests.</p>
                     <div class="flex space-x-4 pt-2">
-                        <button onclick="router('practice')" class="bg-amber-400 text-slate-900 font-bold px-6 py-3 rounded-xl shadow hover:bg-amber-300 transition">Start Practice</button>
-                        <button onclick="router('pro')" class="border border-white text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/10 transition">Explore Pro</button>
+                        <button onclick="router('pyqs')" class="bg-amber-400 text-slate-900 font-bold px-6 py-3 rounded-xl shadow hover:bg-amber-300 transition">Explore PYQs</button>
+                        <button onclick="router('pro')" class="border border-white text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/10 transition">Pro Plans (No Ads)</button>
                     </div>
                 </div>
                 <div class="mt-6 md:mt-0 text-indigo-200 text-8xl">
@@ -51,204 +100,172 @@
                 </div>
             </div>
 
-            <!-- Subject Grid -->
+            <!-- Quick Access Grid -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div onclick="selectSubject('Physics')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
-                    <div class="text-indigo-600 text-3xl"><i class="fa-solid fa-atom"></i></div>
-                    <h3 class="font-bold text-lg">Physics</h3>
-                    <p class="text-xs text-slate-500">Mechanics, Optics & More</p>
+                <div onclick="router('pyqs')" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
+                    <div class="text-indigo-600 text-3xl"><i class="fa-solid fa-file-lines"></i></div>
+                    <h3 class="font-bold text-lg">All PYQs</h3>
+                    <p class="text-xs text-slate-500">100% Free Access</p>
                 </div>
-                <div onclick="selectSubject('Chemistry')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
-                    <div class="text-emerald-600 text-3xl"><i class="fa-solid fa-flask"></i></div>
-                    <h3 class="font-bold text-lg">Chemistry</h3>
-                    <p class="text-xs text-slate-500">Organic, Inorganic, Physical</p>
+                <div onclick="router('chapterwise')" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
+                    <div class="text-emerald-600 text-3xl"><i class="fa-solid fa-list-check"></i></div>
+                    <h3 class="font-bold text-lg">Chapterwise</h3>
+                    <p class="text-xs text-slate-500">First 3 Chapters Free</p>
                 </div>
-                <div onclick="selectSubject('Botany')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
-                    <div class="text-green-600 text-3xl"><i class="fa-solid fa-seedling"></i></div>
-                    <h3 class="font-bold text-lg">Botany</h3>
-                    <p class="text-xs text-slate-500">Plant Physiology & Genetics</p>
+                <div onclick="router('mindmaps')" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
+                    <div class="text-green-600 text-3xl"><i class="fa-solid fa-network-wired"></i></div>
+                    <h3 class="font-bold text-lg">Mind Maps</h3>
+                    <p class="text-xs text-slate-500">Visual Flowcharts</p>
                 </div>
-                <div onclick="selectSubject('Zoology')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
-                    <div class="text-blue-600 text-3xl"><i class="fa-solid fa-dna"></i></div>
-                    <h3 class="font-bold text-lg">Zoology</h3>
-                    <p class="text-xs text-slate-500">Human Physiology & Anatomy</p>
+                <div onclick="router('video')" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
+                    <div class="text-blue-600 text-3xl"><i class="fa-solid fa-video"></i></div>
+                    <h3 class="font-bold text-lg">Videos</h3>
+                    <p class="text-xs text-slate-500">Watch with 10s Ad</p>
                 </div>
             </div>
         </div>
 
-        <!-- Practice View -->
-        <div id="view-practice" class="hidden space-y-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-list-check text-indigo-600"></i> NEET Question Bank & PYQs</h2>
-                <div class="flex flex-wrap gap-2">
-                    <select id="filter-subject" onchange="filterQuestions()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm">
-                        <option value="all">All Subjects</option>
+        <!-- PYQs View (Free) -->
+        <div id="view-pyqs" class="hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <h2 class="text-xl font-bold"><i class="fa-solid fa-file-lines text-indigo-600 mr-2"></i>Previous Year Questions (PYQs)</h2>
+                <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">100% Free</span>
+            </div>
+            <div id="pyqs-list" class="space-y-4"></div>
+        </div>
+
+        <!-- Chapterwise View -->
+        <div id="view-chapterwise" class="hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <h2 class="text-xl font-bold"><i class="fa-solid fa-list-check text-indigo-600 mr-2"></i>Chapterwise Question Practice</h2>
+                <span class="bg-indigo-100 text-indigo-700 text-xs px-2.5 py-1 rounded-full font-bold">First 3 Free</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="chapters-grid"></div>
+        </div>
+
+        <!-- Mind Maps View -->
+        <div id="view-mindmaps" class="hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <h2 class="text-xl font-bold"><i class="fa-solid fa-network-wired text-indigo-600 mr-2"></i>Mind Maps & Flowcharts</h2>
+                <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">Free Access</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="mindmaps-container"></div>
+        </div>
+
+        <!-- Video View -->
+        <div id="view-video" class="hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <h2 class="text-xl font-bold"><i class="fa-solid fa-video text-indigo-600 mr-2"></i>NEET Video Lectures</h2>
+                <span class="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-full font-bold">10s Ad Required</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="video-container"></div>
+        </div>
+
+        <!-- Profile / Firebase Login View -->
+        <div id="view-profile" class="hidden max-w-md mx-auto bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
+            <h2 class="text-xl font-bold border-b pb-3"><i class="fa-solid fa-user text-indigo-600 mr-2"></i>Student Authentication</h2>
+            
+            <div id="user-info" class="hidden space-y-3 text-sm">
+                <p><strong>Email:</strong> <span id="user-email-display"></span></p>
+                <p><strong>Subscription Status:</strong> <span id="profile-sub-status" class="text-amber-600 font-bold">Free Plan</span></p>
+                <button onclick="firebaseLogout()" class="w-full bg-red-500 text-white font-bold py-2 rounded-xl">Logout</button>
+            </div>
+
+            <div id="auth-forms" class="space-y-4">
+                <div class="space-y-2">
+                    <input type="email" id="auth-email" placeholder="Student Email" class="w-full p-2.5 border rounded-xl dark:bg-slate-700 text-sm">
+                    <input type="password" id="auth-pass" placeholder="Password" class="w-full p-2.5 border rounded-xl dark:bg-slate-700 text-sm">
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="firebaseLogin()" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-xl hover:bg-indigo-700">Login</button>
+                    <button onclick="firebaseSignup()" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl hover:bg-emerald-700">Register</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- About View -->
+        <div id="view-about" class="hidden max-w-xl mx-auto bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+            <h2 class="text-xl font-bold border-b pb-3"><i class="fa-solid fa-info-circle text-indigo-600 mr-2"></i>About NEET UG Pro</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300">NEET UG Pro provides high-yield Medical Entrance PYQs, Mind Maps, and Chapterwise tests with real Razorpay integration and Firebase security.</p>
+        </div>
+
+        <!-- Pro Plans View (Razorpay) -->
+        <div id="view-pro" class="hidden max-w-4xl mx-auto space-y-8 py-4">
+            <div class="text-center space-y-2">
+                <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-bold">Go Pro & Ad-Free</span>
+                <h2 class="text-3xl font-extrabold">Choose Your Subscription Plan</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-sm">Payments are processed securely via Razorpay directly to bank account.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 flex flex-col justify-between space-y-4">
+                    <div>
+                        <h3 class="text-xl font-bold">Quarterly Plan</h3>
+                        <p class="text-3xl font-extrabold text-indigo-600 mt-2">₹200 <span class="text-sm font-normal text-slate-500">/ 3 months</span></p>
+                        <ul class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> All Chapterwise Questions Unlocked</li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Zero Video Ads</li>
+                        </ul>
+                    </div>
+                    <button onclick="payWithRazorpay(200, '3 Months Pro Plan')" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition">Pay ₹200 via Razorpay</button>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border-2 border-amber-400 flex flex-col justify-between space-y-4 relative">
+                    <span class="absolute -top-3 right-4 bg-amber-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full shadow">Best Value</span>
+                    <div>
+                        <h3 class="text-xl font-bold">Annual Plan</h3>
+                        <p class="text-3xl font-extrabold text-indigo-600 mt-2">₹500 <span class="text-sm font-normal text-slate-500">/ 1 year</span></p>
+                        <ul class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> All Chapterwise Questions Unlocked</li>
+                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Zero Ads on Videos & App</li>
+                        </ul>
+                    </div>
+                    <button onclick="payWithRazorpay(500, '1 Year Pro Plan')" class="w-full bg-amber-500 text-slate-900 py-2.5 rounded-xl font-bold hover:bg-amber-400 transition">Pay ₹500 via Razorpay</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel View -->
+        <div id="view-admin" class="hidden max-w-2xl mx-auto bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 space-y-6">
+            <div class="flex justify-between items-center border-b pb-4">
+                <h2 class="text-xl font-bold"><i class="fa-solid fa-shield-halved text-amber-600 mr-2"></i>Admin Question Manager</h2>
+                <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded">Secured Mode</span>
+            </div>
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500">Category</label>
+                    <select id="admin-cat" class="w-full mt-1 border rounded-lg p-2.5 dark:bg-slate-700">
+                        <option value="pyq">PYQ</option>
+                        <option value="chapter">Chapterwise Question</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500">Subject</label>
+                    <select id="admin-sub" class="w-full mt-1 border rounded-lg p-2.5 dark:bg-slate-700">
                         <option value="Physics">Physics</option>
                         <option value="Chemistry">Chemistry</option>
                         <option value="Botany">Botany</option>
                         <option value="Zoology">Zoology</option>
                     </select>
-                    <select id="filter-lang" onchange="toggleLanguage()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm">
-                        <option value="en">English</option>
-                        <option value="hi">Hindi (हिंदी)</option>
-                    </select>
                 </div>
-            </div>
-
-            <div id="question-card" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
-                <div class="flex justify-between text-xs text-slate-500 font-semibold">
-                    <span id="q-meta">Physics | PYQ 2024</span>
-                    <span id="q-badge" class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">Free</span>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500">Question Text</label>
+                    <textarea id="admin-text" rows="2" class="w-full mt-1 border rounded-lg p-2.5 dark:bg-slate-700" placeholder="Enter question..."></textarea>
                 </div>
-                <h3 id="q-text" class="text-lg font-medium text-slate-900">Loading Question...</h3>
-                <div id="options-list" class="space-y-2"></div>
-                <div id="explanation-box" class="hidden bg-slate-50 border-l-4 border-indigo-500 p-4 rounded text-sm text-slate-700 space-y-1">
-                    <p class="font-bold text-indigo-900">Explanation:</p>
-                    <p id="q-explanation"></p>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="admin-opt0" placeholder="Option A" class="border rounded-lg p-2 dark:bg-slate-700">
+                    <input type="text" id="admin-opt1" placeholder="Option B" class="border rounded-lg p-2 dark:bg-slate-700">
+                    <input type="text" id="admin-opt2" placeholder="Option C" class="border rounded-lg p-2 dark:bg-slate-700">
+                    <input type="text" id="admin-opt3" placeholder="Option D" class="border rounded-lg p-2 dark:bg-slate-700">
                 </div>
-                <div class="flex justify-between pt-4">
-                    <button onclick="prevQuestion()" class="px-4 py-2 border rounded-lg text-sm font-medium hover:bg-slate-50">Previous</button>
-                    <button onclick="nextQuestion()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700">Next Question</button>
-                </div>
+                <button onclick="adminAddQuestion()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700">Publish Question</button>
             </div>
         </div>
 
-        <!-- Pro Plans View -->
-        <div id="view-pro" class="hidden max-w-4xl mx-auto space-y-8 py-4">
-            <div class="text-center space-y-2">
-                <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-bold">Upgrade to Pro</span>
-                <h2 class="text-3xl font-extrabold text-slate-900">Unlock Unlimited NEET Preparation</h2>
-                <p class="text-slate-600 text-sm">Get access to all PYQs, advanced mind maps, unlimited mock tests, and AI explanations.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 flex flex-col justify-between space-y-4">
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-900">Quarterly Plan</h3>
-                        <p class="text-3xl font-extrabold text-indigo-600 mt-2">₹300 <span class="text-sm font-normal text-slate-500">/ 3 months</span></p>
-                        <ul class="mt-4 space-y-2 text-sm text-slate-600">
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> All Chapter PYQs</li>
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Revision Cards & Mind Maps</li>
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Performance Analytics</li>
-                        </ul>
-                    </div>
-                    <button onclick="initiatePayment(300, 'Quarterly')" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition">Choose Quarterly</button>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-md border-2 border-amber-400 flex flex-col justify-between space-y-4 relative">
-                    <span class="absolute -top-3 right-4 bg-amber-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full shadow">Best Value</span>
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-900">Lifetime Plan</h3>
-                        <p class="text-3xl font-extrabold text-indigo-600 mt-2">₹500 <span class="text-sm font-normal text-slate-500">/ lifetime</span></p>
-                        <ul class="mt-4 space-y-2 text-sm text-slate-600">
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Everything in Quarterly</li>
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Lifetime Updates & New PYQs</li>
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Priority Support</li>
-                        </ul>
-                    </div>
-                    <button onclick="initiatePayment(500, 'Lifetime')" class="w-full bg-amber-500 text-slate-900 py-2.5 rounded-xl font-bold hover:bg-amber-400 transition">Choose Lifetime</button>
-                </div>
-            </div>
-            <div id="payment-notice" class="text-center text-xs text-amber-700 bg-amber-50 p-3 rounded-lg border border-amber-200">
-                <i class="fa-solid fa-circle-info"></i> Payments not configured yet. Configure your payment gateway (Razorpay/Stripe) to enable real checkout.
-            </div>
-        </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
-        &copy; 2026 NEET UG Pro. Built for medical aspirants.
-    </footer>
-
-    <!-- JavaScript Application Core -->
-    <script>
-        function router(viewName) {
-            ['home', 'practice', 'pro'].forEach(v => {
-                const el = document.getElementById(`view-${v}`);
-                if (el) el.classList.add('hidden');
-            });
-            const target = document.getElementById(`view-${viewName}`);
-            if (target) target.classList.remove('hidden');
-            window.scrollTo(0, 0);
-        }
-
-        function selectSubject(subject) {
-            router('practice');
-            const subSelect = document.getElementById('filter-subject');
-            if (subSelect) {
-                subSelect.value = subject;
-                filterQuestions();
-            }
-        }
-
-        const questionsDB = [
-            { id: 1, subject: 'Physics', textEn: 'The dimensional formula of Planck\'s constant is:', textHn: 'प्लैंक नियतांक का विमीय सूत्र है:', optionsEn: ['[ML2T-1]', '[MLT-2]', '[ML2T-2]', '[MLT-1]'], optionsHn: ['[ML2T-1]', '[MLT-2]', '[ML2T-2]', '[MLT-1]'], correct: 0, expEn: 'Planck\'s constant E = hν, so h = E/ν = [ML2T-2]/[T-1] = [ML2T-1].', expHn: 'प्लैंक नियतांक E = hν, इसलिए h = [ML2T-1].', isPro: false },
-            { id: 2, subject: 'Chemistry', textEn: 'Which of the following molecules has zero dipole moment?', textHn: 'निम्नलिखित में से किस अणु का द्विध्रुव आघूर्ण शून्य है?', optionsEn: ['H2O', 'HF', 'BF3', 'NH3'], optionsHn: ['H2O', 'HF', 'BF3', 'NH3'], correct: 2, expEn: 'BF3 has a symmetrical trigonal planar geometry, cancelling out bond moments.', expHn: 'BF3 की ज्यामिति सममित त्रिकोणीय समतलीय होती है।', isPro: false },
-            { id: 3, subject: 'Botany', textEn: 'Root pressure develops due to:', textHn: 'मूल दाब किसके कारण उत्पन्न होता है?', optionsEn: ['Active absorption', 'Passive absorption', 'Transpiration', 'Osmosis'], optionsHn: ['सक्रिय अवशोषण', 'निष्क्रिय अवशोषण', 'वाष्पोसर्जन', 'परासरण'], correct: 0, expEn: 'Root pressure is a result of active absorption of ions by root cells.', expHn: 'मूल दाब जड़ की कोशिकाओं द्वारा आयनों के सक्रिय अवशोषण का परिणाम है।', isPro: true }
-        ];
-
-        let currentIdx = 0;
-        let currentLang = 'en';
-
-        function loadQuestion() {
-            const q = questionsDB[currentIdx];
-            if (!q) return;
-            document.getElementById('q-meta').innerText = `${q.subject} | NEET Sample`;
-            document.getElementById('q-badge').innerText = q.isPro ? 'Pro' : 'Free';
-            document.getElementById('q-text').innerText = currentLang === 'en' ? q.textEn : q.textHn;
-            
-            const optionsEl = document.getElementById('options-list');
-            optionsEl.innerHTML = '';
-            const opts = currentLang === 'en' ? q.optionsEn : q.optionsHn;
-            
-            opts.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-indigo-50 hover:border-indigo-300 text-sm transition';
-                btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
-                btn.onclick = () => checkAnswer(idx, q.correct);
-                optionsEl.appendChild(btn);
-            });
-            document.getElementById('explanation-box').classList.add('hidden');
-        }
-
-        function checkAnswer(selected, correct) {
-            const expBox = document.getElementById('explanation-box');
-            document.getElementById('q-explanation').innerText = currentLang === 'en' ? questionsDB[currentIdx].expEn : questionsDB[currentIdx].expHn;
-            expBox.classList.remove('hidden');
-        }
-
-        function nextQuestion() {
-            currentIdx = (currentIdx + 1) % questionsDB.length;
-            loadQuestion();
-        }
-
-        function prevQuestion() {
-            currentIdx = (currentIdx - 1 + questionsDB.length) % questionsDB.length;
-            loadQuestion();
-        }
-
-        function filterQuestions() {
-            currentIdx = 0;
-            loadQuestion();
-        }
-
-        function toggleLanguage() {
-            currentLang = document.getElementById('filter-lang').value;
-            loadQuestion();
-        }
-
-        function initiatePayment(amount, planName) {
-            alert(`Payment Gateway not configured yet. Selected Plan: ${planName} (₹${amount}). Please connect Razorpay or Stripe to process live payments.`);
-        }
-
-        function openAuthModal() {
-            alert('Authentication modal: Connect Firebase Auth to enable secure student registration & login.');
-        }
-
-        window.onload = () => {
-            loadQuestion();
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./service-worker.js').catch(err => console.log('SW registration failed:', err));
-            }
-        };
-    </script>
-</body>
-          </html>
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around py-3 z-30 shadow-lg">
+        <button onclick="router('home')" class="flex flex-col items-center text-slate-600 dark:text-slate-400 hover:text-indigo-600">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Home</span>
+        </button>
+        <button onclick="router('p
