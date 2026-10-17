@@ -12,10 +12,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Razorpay Checkout SDK -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-    <!-- Firebase SDKs (v9/v10 Compatibility Mode) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
@@ -36,19 +33,6 @@
         </div>
     </div>
 
-    <!-- Video 10-Sec Ad Overlay -->
-    <div id="video-ad-modal" class="hidden fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
-            <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full font-bold">Watch Ad to Unlock Video</span>
-            <h3 class="text-lg font-bold text-slate-900">Concept Revision Video</h3>
-            <div class="bg-slate-100 py-6 rounded-xl">
-                <span id="video-ad-timer" class="text-3xl font-black text-amber-600">10</span>
-                <p class="text-[10px] text-slate-500 uppercase mt-1">Ad playing...</p>
-            </div>
-            <button id="close-video-ad" disabled class="w-full bg-slate-300 text-slate-600 font-bold py-2.5 rounded-xl cursor-not-allowed">Please wait...</button>
-        </div>
-    </div>
-
     <!-- Top Header -->
     <header class="bg-indigo-600 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -58,13 +42,11 @@
             </div>
             
             <div class="flex items-center space-x-4">
-                <!-- Notifications -->
                 <button onclick="openNotifications()" class="relative text-white hover:text-indigo-200 transition">
                     <i class="fa-solid fa-bell text-lg"></i>
                     <span class="absolute -top-1 -right-1 bg-amber-400 text-slate-900 text-[10px] font-bold px-1 rounded-full">2</span>
                 </button>
 
-                <!-- Three-Dot Menu -->
                 <div class="relative">
                     <button onclick="toggleMenu()" class="text-white hover:text-indigo-200 p-1 transition">
                         <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
@@ -100,7 +82,6 @@
                 </div>
             </div>
 
-            <!-- Quick Access Grid -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div onclick="router('pyqs')" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
                     <div class="text-indigo-600 text-3xl"><i class="fa-solid fa-file-lines"></i></div>
@@ -120,15 +101,15 @@
                 <div onclick="router('video')" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition text-center space-y-2">
                     <div class="text-blue-600 text-3xl"><i class="fa-solid fa-video"></i></div>
                     <h3 class="font-bold text-lg">Videos</h3>
-                    <p class="text-xs text-slate-500">Watch with 10s Ad</p>
+                    <p class="text-xs text-slate-500">Lecture Access</p>
                 </div>
             </div>
         </div>
 
-        <!-- PYQs View (Free) -->
+        <!-- PYQs View -->
         <div id="view-pyqs" class="hidden space-y-6">
             <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center">
-                <h2 class="text-xl font-bold"><i class="fa-solid fa-file-lines text-indigo-600 mr-2"></i>Previous Year Questions (PYQs)</h2>
+                <h2 class="text-xl font-bold"><i class="fa-solid fa-file-lines text-indigo-600 mr-2"></i>Previous Year Questions</h2>
                 <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold">100% Free</span>
             </div>
             <div id="pyqs-list" class="space-y-4"></div>
@@ -156,29 +137,26 @@
         <div id="view-video" class="hidden space-y-6">
             <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center">
                 <h2 class="text-xl font-bold"><i class="fa-solid fa-video text-indigo-600 mr-2"></i>NEET Video Lectures</h2>
-                <span class="bg-amber-100 text-amber-800 text-xs px-2.5 py-1 rounded-full font-bold">10s Ad Required</span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="video-container"></div>
         </div>
 
-        <!-- Profile / Firebase Login View -->
+        <!-- Profile / Auth View -->
         <div id="view-profile" class="hidden max-w-md mx-auto bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
             <h2 class="text-xl font-bold border-b pb-3"><i class="fa-solid fa-user text-indigo-600 mr-2"></i>Student Authentication</h2>
             
             <div id="user-info" class="hidden space-y-3 text-sm">
                 <p><strong>Email:</strong> <span id="user-email-display"></span></p>
-                <p><strong>Subscription Status:</strong> <span id="profile-sub-status" class="text-amber-600 font-bold">Free Plan</span></p>
+                <p><strong>Status:</strong> <span id="profile-sub-status" class="text-amber-600 font-bold">Free Plan</span></p>
                 <button onclick="firebaseLogout()" class="w-full bg-red-500 text-white font-bold py-2 rounded-xl">Logout</button>
             </div>
 
             <div id="auth-forms" class="space-y-4">
-                <div class="space-y-2">
-                    <input type="email" id="auth-email" placeholder="Student Email" class="w-full p-2.5 border rounded-xl dark:bg-slate-700 text-sm">
-                    <input type="password" id="auth-pass" placeholder="Password" class="w-full p-2.5 border rounded-xl dark:bg-slate-700 text-sm">
-                </div>
+                <input type="email" id="auth-email" placeholder="Student Email" class="w-full p-2.5 border rounded-xl dark:bg-slate-700 text-sm">
+                <input type="password" id="auth-pass" placeholder="Password" class="w-full p-2.5 border rounded-xl dark:bg-slate-700 text-sm">
                 <div class="flex space-x-2">
-                    <button onclick="firebaseLogin()" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-xl hover:bg-indigo-700">Login</button>
-                    <button onclick="firebaseSignup()" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl hover:bg-emerald-700">Register</button>
+                    <button onclick="firebaseLogin()" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-xl">Login</button>
+                    <button onclick="firebaseSignup()" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl">Register</button>
                 </div>
             </div>
         </div>
@@ -186,39 +164,28 @@
         <!-- About View -->
         <div id="view-about" class="hidden max-w-xl mx-auto bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
             <h2 class="text-xl font-bold border-b pb-3"><i class="fa-solid fa-info-circle text-indigo-600 mr-2"></i>About NEET UG Pro</h2>
-            <p class="text-sm text-slate-600 dark:text-slate-300">NEET UG Pro provides high-yield Medical Entrance PYQs, Mind Maps, and Chapterwise tests with real Razorpay integration and Firebase security.</p>
+            <p class="text-sm text-slate-600 dark:text-slate-300">High-yield Medical Entrance preparation platform with direct Paytm UPI payment support.</p>
         </div>
 
-        <!-- Pro Plans View (Razorpay) -->
-        <div id="view-pro" class="hidden max-w-4xl mx-auto space-y-8 py-4">
+        <!-- Pro Plans View (Paytm UPI Payment) -->
+        <div id="view-pro" class="hidden max-w-xl mx-auto space-y-6 py-4">
             <div class="text-center space-y-2">
-                <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-bold">Go Pro & Ad-Free</span>
-                <h2 class="text-3xl font-extrabold">Choose Your Subscription Plan</h2>
-                <p class="text-slate-600 dark:text-slate-400 text-sm">Payments are processed securely via Razorpay directly to bank account.</p>
+                <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-bold">Go Pro</span>
+                <h2 class="text-2xl font-extrabold">Unlock All Chapterwise Tests</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-sm">Scan QR or pay via Paytm UPI ID and submit your Transaction Reference ID.</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 flex flex-col justify-between space-y-4">
-                    <div>
-                        <h3 class="text-xl font-bold">Quarterly Plan</h3>
-                        <p class="text-3xl font-extrabold text-indigo-600 mt-2">₹200 <span class="text-sm font-normal text-slate-500">/ 3 months</span></p>
-                        <ul class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> All Chapterwise Questions Unlocked</li>
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Zero Video Ads</li>
-                        </ul>
-                    </div>
-                    <button onclick="payWithRazorpay(200, '3 Months Pro Plan')" class="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition">Pay ₹200 via Razorpay</button>
+
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 space-y-4 text-center">
+                <h3 class="font-bold text-lg">Pay ₹200 (Quarterly) or ₹500 (Annual)</h3>
+                <div class="bg-slate-100 dark:bg-slate-700 p-4 rounded-xl inline-block space-y-2">
+                    <i class="fa-solid fa-qrcode text-7xl text-indigo-600"></i>
+                    <p class="text-xs text-slate-500">Payee: <strong>Naresh Kumar</strong>[cite: 8]</p>
+                    <p class="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-bold">UPI ID: n.kumar-50495@ptyes</p>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border-2 border-amber-400 flex flex-col justify-between space-y-4 relative">
-                    <span class="absolute -top-3 right-4 bg-amber-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full shadow">Best Value</span>
-                    <div>
-                        <h3 class="text-xl font-bold">Annual Plan</h3>
-                        <p class="text-3xl font-extrabold text-indigo-600 mt-2">₹500 <span class="text-sm font-normal text-slate-500">/ 1 year</span></p>
-                        <ul class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> All Chapterwise Questions Unlocked</li>
-                            <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Zero Ads on Videos & App</li>
-                        </ul>
-                    </div>
-                    <button onclick="payWithRazorpay(500, '1 Year Pro Plan')" class="w-full bg-amber-500 text-slate-900 py-2.5 rounded-xl font-bold hover:bg-amber-400 transition">Pay ₹500 via Razorpay</button>
+                <div class="space-y-3 pt-2 text-left">
+                    <label class="block text-xs font-bold uppercase text-slate-500">Enter UPI Transaction Reference / UTR ID</label>
+                    <input type="text" id="upi-txn-id" placeholder="e.g. 403928192039" class="w-full p-2.5 border rounded-xl dark:bg-slate-700 text-sm">
+                    <button onclick="submitUpiPayment()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition">Submit Payment for Verification</button>
                 </div>
             </div>
         </div>
@@ -226,37 +193,35 @@
         <!-- Admin Panel View -->
         <div id="view-admin" class="hidden max-w-2xl mx-auto bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 space-y-6">
             <div class="flex justify-between items-center border-b pb-4">
-                <h2 class="text-xl font-bold"><i class="fa-solid fa-shield-halved text-amber-600 mr-2"></i>Admin Question Manager</h2>
-                <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded">Secured Mode</span>
+                <h2 class="text-xl font-bold"><i class="fa-solid fa-shield-halved text-amber-600 mr-2"></i>Admin Dashboard</h2>
+                <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded">Secured</span>
             </div>
-            <div class="space-y-4 text-sm">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500">Category</label>
-                    <select id="admin-cat" class="w-full mt-1 border rounded-lg p-2.5 dark:bg-slate-700">
+            
+            <div class="space-y-6">
+                <!-- Add Question Form -->
+                <div class="space-y-4 text-sm bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl">
+                    <h3 class="font-bold text-indigo-600">Add New Question</h3>
+                    <select id="admin-cat" class="w-full border rounded-lg p-2 dark:bg-slate-700 text-sm">
                         <option value="pyq">PYQ</option>
                         <option value="chapter">Chapterwise Question</option>
                     </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500">Subject</label>
-                    <select id="admin-sub" class="w-full mt-1 border rounded-lg p-2.5 dark:bg-slate-700">
+                    <select id="admin-sub" class="w-full border rounded-lg p-2 dark:bg-slate-700 text-sm">
                         <option value="Physics">Physics</option>
                         <option value="Chemistry">Chemistry</option>
                         <option value="Botany">Botany</option>
                         <option value="Zoology">Zoology</option>
                     </select>
+                    <textarea id="admin-text" rows="2" class="w-full border rounded-lg p-2 dark:bg-slate-700 text-sm" placeholder="Question text..."></textarea>
+                    <button onclick="adminAddQuestion()" class="w-full bg-indigo-600 text-white font-bold py-2 rounded-lg">Publish Question</button>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-500">Question Text</label>
-                    <textarea id="admin-text" rows="2" class="w-full mt-1 border rounded-lg p-2.5 dark:bg-slate-700" placeholder="Enter question..."></textarea>
+
+                <!-- Pending Payment Approvals -->
+                <div class="space-y-3">
+                    <h3 class="font-bold text-slate-700 dark:text-slate-200">Pending Student Payments</h3>
+                    <div id="admin-pending-payments" class="space-y-2 text-xs">
+                        <!-- Loaded dynamically -->
+                    </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="admin-opt0" placeholder="Option A" class="border rounded-lg p-2 dark:bg-slate-700">
-                    <input type="text" id="admin-opt1" placeholder="Option B" class="border rounded-lg p-2 dark:bg-slate-700">
-                    <input type="text" id="admin-opt2" placeholder="Option C" class="border rounded-lg p-2 dark:bg-slate-700">
-                    <input type="text" id="admin-opt3" placeholder="Option D" class="border rounded-lg p-2 dark:bg-slate-700">
-                </div>
-                <button onclick="adminAddQuestion()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700">Publish Question</button>
             </div>
         </div>
 
@@ -268,4 +233,70 @@
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[10px] font-medium mt-1">Home</span>
         </button>
-        <button onclick="router('p
+        <button onclick="router('pyqs')" class="flex flex-col items-center text-slate-600 dark:text-slate-400 hover:text-indigo-600">
+            <i class="fa-solid fa-file-lines text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">PYQs</span>
+        </button>
+        <button onclick="router('chapterwise')" class="flex flex-col items-center text-slate-600 dark:text-slate-400 hover:text-indigo-600">
+            <i class="fa-solid fa-list-check text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Chapterwise</span>
+        </button>
+        <button onclick="router('mindmaps')" class="flex flex-col items-center text-slate-600 dark:text-slate-400 hover:text-indigo-600">
+            <i class="fa-solid fa-network-wired text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Mind Map</span>
+        </button>
+        <button onclick="router('video')" class="flex flex-col items-center text-slate-600 dark:text-slate-400 hover:text-indigo-600">
+            <i class="fa-solid fa-video text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Video</span>
+        </button>
+    </nav>
+
+    <!-- App Logic Script -->
+    <script>
+        // FIREBASE CONFIG (Aapki keys)
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1jMxXA7wuoGTe5SMRUtBQkgusAyNTW9s",
+            authDomain: "neet-ug-pro.firebaseapp.com",
+            projectId: "neet-ug-pro",
+            storageBucket: "neet-ug-pro.firebasestorage.app",
+            messagingSenderId: "461230670713",
+            appId: "1:461230670713:web:85efb6f6a791f12b2025a8"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        // Admin Secret Phrase
+        const ADMIN_SECRET = "Naresh@190406";
+
+        function router(viewName) {
+            ['home', 'pyqs', 'chapterwise', 'mindmaps', 'video', 'profile', 'about', 'pro', 'admin'].forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(`view-${viewName}`);
+            if (target) target.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMenu() {
+            document.getElementById('dropdown-menu').classList.toggle('hidden');
+        }
+
+        let isDark = false;
+        function toggleDarkMode() {
+            isDark = !isDark;
+            const root = document.getElementById('html-root');
+            const body = document.getElementById('body-theme');
+            if (isDark) {
+                root.classList.add('dark');
+                body.classList.remove('bg-slate-50', 'text-slate-800');
+                body.classList.add('bg-slate-900', 'text-slate-100');
+            } else {
+                root.classList.remove('dark');
+                body.classList.remove('bg-slate-900', 'text-slate-100');
+                body.classList.add('bg-slate-50', 'text-slate-800');
+            }
+        }
+
+        // Startup Ad
+        let adSec = 5;
+    
